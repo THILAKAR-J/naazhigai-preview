@@ -13,20 +13,8 @@
   --f-body: 'Hind Madurai', 'Noto Sans Tamil', system-ui, sans-serif;
   --r: 16px; --bw: 2.5px; --sh: 6px;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #15120F; --paper: #1E1A16; --ink: #F4EEDC; --ink-2: #DCD3BF; --muted: #BDB39D;
-    --line: #E9E1CC; --rule: #3B352D; --zebra: #231E19; --hover: #3A3020; --off: #191612;
-    --teal-soft: #1F4D3F; --on-teal-soft: #D5F3E3; --pink: #4C2219; --on-pink: #FFD9CF;
-    --shadow: #5B5141; --band: #0A0806; --focus: #93B4FF; --link-hover: #FF9A82; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #15120F; --paper: #1E1A16; --ink: #F4EEDC; --ink-2: #DCD3BF; --muted: #BDB39D;
-  --line: #E9E1CC; --rule: #3B352D; --zebra: #231E19; --hover: #3A3020; --off: #191612;
-  --teal-soft: #1F4D3F; --on-teal-soft: #D5F3E3; --pink: #4C2219; --on-pink: #FFD9CF;
-  --shadow: #5B5141; --band: #0A0806; --focus: #93B4FF; --link-hover: #FF9A82; color-scheme: dark;
-}
+/* Single light theme (matches the approved PDF): no automatic dark mode. */
+:root, :root[data-theme="dark"] { color-scheme: only light; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -178,6 +166,11 @@ table.cal td.is-today a, table.cal td.is-today .tm, table.cal td.is-today .ti { 
 .chips { display: flex; flex-wrap: wrap; gap: 10px; }
 .chip { display: inline-flex; align-items: center; min-height: 40px; padding: 6px 16px; border: var(--bw) solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; font-weight: 700; font-size: 15px; background: var(--paper); }
 .chip:hover, .chip[aria-current="page"] { background: var(--yellow); color: var(--on-yellow); }
+.years { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 18px; }
+.years .chip { font-family: var(--f-display); font-weight: 800; font-size: 18px; min-height: 44px; padding: 6px 22px; box-shadow: 4px 4px 0 var(--shadow); }
+.years .chip.cur { background: var(--band); color: var(--on-band); }
+span.chip { cursor: default; }
+span.chip:hover { background: var(--paper); color: var(--ink); }
 .daychips .chip { min-width: 92px; justify-content: center; font-variant-numeric: tabular-nums; }
 .daychips .chip .wd { color: var(--muted); font-weight: 600; margin-right: 4px; }
 .daychips .chip.has-ev { background: var(--teal-soft); color: var(--on-teal-soft); }

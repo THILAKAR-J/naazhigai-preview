@@ -14,7 +14,7 @@
   function fmt(k) { var p = parts(k); var wd = C.wd[wdOf(k)]; return (C.lang === 'en' ? wd.slice(0, 3) : wd) + ', ' + p.d + ' ' + C.mon[p.m - 1] + ' ' + p.y; }
   function fmtShort(k) { var p = parts(k); return p.d + ' ' + C.mon[p.m - 1]; }
   function each(sel, fn) { Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
-  var inYear = parts(K).y === C.y;
+  var inYear = parts(K).y === (C.dy || C.y); // daily pages exist for the primary year
   if (K === C.today) { return; } // the static page was built for today: nothing to change
 
   // top strip
@@ -45,7 +45,7 @@
       var el = box.querySelector('[data-slot="' + slot + '"]');
       if (!el) return;
       el.textContent = '';
-      if (x) { var l = document.createElement('a'); l.href = x.h; l.textContent = x.t; el.appendChild(l); } else el.textContent = fallback;
+      if (x && x.h) { var l = document.createElement('a'); l.href = x.h; l.textContent = x.t; el.appendChild(l); } else el.textContent = x ? x.t : fallback;
     }
     var nowEl = box.querySelector('[data-slot="now"]');
     if (nowEl) nowEl.textContent = cur ? box.getAttribute('data-yes') : box.getAttribute('data-no');
