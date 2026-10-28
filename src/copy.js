@@ -123,7 +123,7 @@ const C = {
     en: { title: 'Pournami Dates {y} – Full Moon Days with Timings', h1: 'Pournami {y}', desc: 'All Pournami (full moon) dates of {y} with tithi start and end times for {c}, including Chithra Pournami and Karthigai Deepam.', lead: 'Full moon days of {y}, with exact start and end of the Pournami tithi.' },
     ta: { title: 'பௌர்ணமி {y} – நேரத்துடன்', h1: 'பௌர்ணமி நாட்கள் {y}', desc: '{y} ஆண்டின் அனைத்து பௌர்ணமி நாட்களும் {c} திதி தொடக்க, முடிவு நேரத்துடன்; சித்ரா பௌர்ணமி, கார்த்திகை தீபம் உட்பட.', lead: '{y} பௌர்ணமி நாட்கள் – பௌர்ணமி திதி தொடங்கும், முடியும் நேரத்துடன்.' }
   },
-  amavasya: {
+  amavasai: {
     en: { title: 'Amavasai Dates {y} – New Moon Days with Timings', h1: 'Amavasai {y}', desc: 'All Amavasai (new moon) dates of {y} with tithi start and end times for {c}, including Thai, Aadi and Mahalaya Amavasai.', lead: 'New moon days of {y}, the days for tharpanam, with exact start and end of the Amavasai tithi.' },
     ta: { title: 'அமாவாசை {y} – நேரத்துடன்', h1: 'அமாவாசை நாட்கள் {y}', desc: '{y} ஆண்டின் அனைத்து அமாவாசை நாட்களும் {c} திதி தொடக்க, முடிவு நேரத்துடன்; தை, ஆடி, மஹாளய அமாவாசை உட்பட.', lead: 'தர்ப்பணத்துக்கான {y} அமாவாசை நாட்கள் – திதி தொடங்கும், முடியும் நேரத்துடன்.' }
   },

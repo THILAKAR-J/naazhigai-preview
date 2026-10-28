@@ -30,7 +30,7 @@ const YEARABLE = new Set(['timings', 'nalla-neram', 'gowri-nalla-neram', 'rahu-k
   'muhurtham-dates', 'subha-muhurtham-dates', 'valarpirai-muhurtham-dates', 'theipirai-muhurtham-dates',
   'viratham', 'pradosham-dates', 'sankatahara-chaturthi-dates', 'sashti-viratham-dates', 'karthigai-viratham-dates',
   'chaturthi-viratham-dates', 'shivaratri-dates', 'thiruvonam-dates', 'chandra-darshan-dates',
-  'tithi', 'pournami', 'amavasya', 'ashtami-navami', 'ashtami-navami-dashami', 'valarpirai-ashtami', 'theipirai-ashtami',
+  'tithi', 'pournami', 'amavasai', 'ashtami-navami', 'ashtami-navami-dashami', 'valarpirai-ashtami', 'theipirai-ashtami',
   'valarpirai-dates', 'theipirai-dates', 'tamil-holidays', 'tamil-festivals', 'tamil-months', 'retrograde',
   'prathamai-tithi', 'dwitiya-tithi', 'tritiya-tithi', 'chaturthi-tithi', 'panchami-tithi', 'sashti-tithi', 'saptami-tithi',
   'ashtami-tithi', 'navami-tithi', 'dashami-tithi', 'ekadashi-tithi', 'dwadashi-tithi', 'trayodashi-tithi', 'chaturdashi-tithi']);
@@ -189,7 +189,7 @@ function weeklyTable(lang) {
 }
 const fixedRange = (h) => { const s = new Date(Date.UTC(2000, 0, 1) + (h * 60 - 330) * 60000); return F.fmtT(s) + ' – ' + F.fmtT(new Date(s.getTime() + 90 * 60000)); };
 
-const NAV = [['home', 'Today', 'இன்று'], ['tamil-daily-calendar', 'Daily', 'தினசரி'], ['tamil-monthly-calendar', 'Monthly', 'மாதம்'], ['nalla-neram', 'Nalla Neram', 'நல்ல நேரம்'], ['rahu-kalam', 'Rahu Kalam', 'ராகு காலம்'], ['muhurtham-dates', 'Muhurtham', 'முகூர்த்தம்'], ['pournami', 'Pournami', 'பௌர்ணமி'], ['amavasya', 'Amavasai', 'அமாவாசை'], ['viratham', 'Viratham', 'விரதம்'], ['tamil-festivals', 'Festivals', 'பண்டிகைகள்'], ['tamil-holidays', 'Holidays', 'விடுமுறைகள்'], ['timings', 'All timings', 'அனைத்து நேரங்கள்']];
+const NAV = [['home', 'Today', 'இன்று'], ['tamil-daily-calendar', 'Daily', 'தினசரி'], ['tamil-monthly-calendar', 'Monthly', 'மாதம்'], ['nalla-neram', 'Nalla Neram', 'நல்ல நேரம்'], ['rahu-kalam', 'Rahu Kalam', 'ராகு காலம்'], ['muhurtham-dates', 'Muhurtham', 'முகூர்த்தம்'], ['pournami', 'Pournami', 'பௌர்ணமி'], ['amavasai', 'Amavasai', 'அமாவாசை'], ['viratham', 'Viratham', 'விரதம்'], ['tamil-festivals', 'Festivals', 'பண்டிகைகள்'], ['tamil-holidays', 'Holidays', 'விடுமுறைகள்'], ['timings', 'All timings', 'அனைத்து நேரங்கள்']];
 const navRoute = (s) => (s === 'home' ? { p: 'home' } : pg(s));
 
 // list of the main pages, used by explore chips, footer and site map
@@ -198,7 +198,7 @@ const GROUPS = [
   ['timings', [['timings', 'All timings', 'அனைத்து நேரங்கள்'], ['nalla-neram', 'Nalla Neram', 'நல்ல நேரம்'], ['gowri-nalla-neram', 'Gowri Nalla Neram', 'கௌரி நல்ல நேரம்'], ['rahu-kalam', 'Rahu Kalam', 'ராகு காலம்'], ['yamagandam', 'Yamagandam', 'எமகண்டம்'], ['kuligai-neram', 'Kuligai Neram', 'குளிகை நேரம்'], ['soolam-pariharam', 'Soolam & Pariharam', 'சூலம் & பரிகாரம்']]],
   ['muhurtham', [['muhurtham-dates', 'Muhurtham dates', 'முகூர்த்த நாட்கள்'], ['subha-muhurtham-dates', 'Subha Muhurtham', 'சுப முகூர்த்தம்'], ['valarpirai-muhurtham-dates', 'Valarpirai Muhurtham', 'வளர்பிறை முகூர்த்தம்'], ['theipirai-muhurtham-dates', 'Theipirai Muhurtham', 'தேய்பிறை முகூர்த்தம்']]],
   ['viratham', [['viratham', 'All viratham days', 'அனைத்து விரதங்கள்'], ['pradosham-dates', 'Pradosham', 'பிரதோஷம்'], ['sankatahara-chaturthi-dates', 'Sankatahara Chathurthi', 'சங்கடஹர சதுர்த்தி'], ['sashti-viratham-dates', 'Sashti Viratham', 'சஷ்டி விரதம்'], ['karthigai-viratham-dates', 'Karthigai Viratham', 'கார்த்திகை விரதம்'], ['chaturthi-viratham-dates', 'Chathurthi Viratham', 'சதுர்த்தி விரதம்'], ['shivaratri-dates', 'Shivaratri', 'சிவராத்திரி'], ['thiruvonam-dates', 'Thiruvonam', 'திருவோணம்'], ['chandra-darshan-dates', 'Chandra Darshan', 'சந்திர தரிசனம்'], ['ekadashi-tithi', 'Ekadasi', 'ஏகாதசி']]],
-  ['tithi', [['tithi', 'All tithi', 'அனைத்து திதிகள்'], ['pournami', 'Pournami', 'பௌர்ணமி'], ['amavasya', 'Amavasai', 'அமாவாசை'], ['ashtami-navami', 'Ashtami & Navami', 'அஷ்டமி & நவமி'], ['ashtami-navami-dashami', 'Ashtami, Navami & Dasami', 'அஷ்டமி, நவமி & தசமி'], ['valarpirai-ashtami', 'Valarpirai Ashtami', 'வளர்பிறை அஷ்டமி'], ['theipirai-ashtami', 'Theipirai Ashtami', 'தேய்பிறை அஷ்டமி'], ['valarpirai-dates', 'Valarpirai dates', 'வளர்பிறை நாட்கள்'], ['theipirai-dates', 'Theipirai dates', 'தேய்பிறை நாட்கள்']]],
+  ['tithi', [['tithi', 'All tithi', 'அனைத்து திதிகள்'], ['pournami', 'Pournami', 'பௌர்ணமி'], ['amavasai', 'Amavasai', 'அமாவாசை'], ['ashtami-navami', 'Ashtami & Navami', 'அஷ்டமி & நவமி'], ['ashtami-navami-dashami', 'Ashtami, Navami & Dasami', 'அஷ்டமி, நவமி & தசமி'], ['valarpirai-ashtami', 'Valarpirai Ashtami', 'வளர்பிறை அஷ்டமி'], ['theipirai-ashtami', 'Theipirai Ashtami', 'தேய்பிறை அஷ்டமி'], ['valarpirai-dates', 'Valarpirai dates', 'வளர்பிறை நாட்கள்'], ['theipirai-dates', 'Theipirai dates', 'தேய்பிறை நாட்கள்']]],
   ['site', [['about', 'About', 'எங்களைப் பற்றி'], ['disclaimer', 'Disclaimer', 'பொறுப்புத் துறப்பு'], ['privacy-policy', 'Privacy policy', 'தனியுரிமை'], ['terms-of-use', 'Terms of use', 'விதிமுறைகள்'], ['contact-us', 'Contact us', 'தொடர்பு'], ['site-map', 'Site map', 'தள வரைபடம்']]]
 ];
 const GROUP_TITLE = { calendar: ['Calendar', 'காலண்டர்'], timings: ['Timings', 'நேரங்கள்'], muhurtham: ['Muhurtham', 'முகூர்த்தம்'], viratham: ['Viratham', 'விரதம்'], tithi: ['Tithi', 'திதி'], site: ['About', 'பற்றி'] };
@@ -543,7 +543,7 @@ function buildTithi(lang) {
     listPage(slug, DAYS.filter((d) => idx.includes(d.tithi)), c.title, c.h1, c.desc, c.lead);
   }
   // Pournami / Amavasai
-  for (const [slug, key, i] of [['pournami', 'pournami', 14], ['amavasya', 'amavasai', 29]]) {
+  for (const [slug, key, i] of [['pournami', 'pournami', 14], ['amavasai', 'amavasai', 29]]) {
     const list = M.moonDays[key];
     const items = list.map((x) => ({ s: x.days[0].key, e: x.days[x.days.length - 1].key, label: x.days.map((d) => F.fmtD(d.key, lang, 'wd')).join(' + ') + ' · ' + tdShort(x.days[0], lang), h: hdl(lang, x.days[0].key) }));
     const rows = list.map((x) => {
@@ -570,13 +570,13 @@ function buildTithi(lang) {
   }
   // Tithi hub
   const rows = TITHI_PAGES.map(([slug, idx]) => '<tr><th scope="row"><a href="' + href(lang, pg(slug)) + '">' + esc(N.TITHI[idx[0]][lang]) + '</a><small lang="' + (lang === 'en' ? 'ta' : 'en') + '">' + esc(N.TITHI[idx[0]][lang === 'en' ? 'ta' : 'en']) + '</small></th><td class="tnum">' + DAYS.filter((d) => d.tithi === idx[0]).length + '</td><td class="tnum">' + DAYS.filter((d) => d.tithi === idx[1]).length + '</td></tr>')
-    .concat([['pournami', 14], ['amavasya', 29]].map(([slug, i]) => '<tr><th scope="row"><a href="' + href(lang, pg(slug)) + '">' + esc(N.TITHI[i][lang]) + '</a><small>' + esc(N.TITHI[i][lang === 'en' ? 'ta' : 'en']) + '</small></th><td class="tnum">' + (i === 14 ? DAYS.filter((d) => d.tithi === 14).length : '–') + '</td><td class="tnum">' + (i === 29 ? DAYS.filter((d) => d.tithi === 29).length : '–') + '</td></tr>'));
+    .concat([['pournami', 14], ['amavasai', 29]].map(([slug, i]) => '<tr><th scope="row"><a href="' + href(lang, pg(slug)) + '">' + esc(N.TITHI[i][lang]) + '</a><small>' + esc(N.TITHI[i][lang === 'en' ? 'ta' : 'en']) + '</small></th><td class="tnum">' + (i === 14 ? DAYS.filter((d) => d.tithi === 14).length : '–') + '</td><td class="tnum">' + (i === 29 ? DAYS.filter((d) => d.tithi === 29).length : '–') + '</td></tr>'));
   const body = methodBox(lang, C.tithi.method[lang]) + sec('idx', esc(lang === 'en' ? 'Tithi index' : 'திதி அட்டவணை'), '', table([Lx.tithi, N.PIRAI.V[lang] + ' · ' + Lx.days, N.PIRAI.T[lang] + ' · ' + Lx.days], rows)) +
     sec('rel', esc(lang === 'en' ? 'Tithi lists' : 'திதிப் பட்டியல்கள்'), '', '<div class="chips">' + GROUPS[4][1].slice(1).map((it) => '<a class="chip" href="' + href(lang, pg(it[0])) + '">' + esc(lang === 'en' ? it[1] : it[2]) + '</a>').join('') + '</div>');
   stdPage(lang, 'tithi', body);
 }
 function tithiChips(lang, cur) {
-  const items = [['pournami', N.TITHI[14][lang]], ['amavasya', N.TITHI[29][lang]]].concat(TITHI_PAGES.map(([s, idx]) => [s, N.TITHI[idx[0]][lang]]));
+  const items = [['pournami', N.TITHI[14][lang]], ['amavasai', N.TITHI[29][lang]]].concat(TITHI_PAGES.map(([s, idx]) => [s, N.TITHI[idx[0]][lang]]));
   return '<div class="chips">' + items.map(([s, t]) => '<a class="chip" href="' + href(lang, pg(s)) + '"' + (s === cur ? ' aria-current="page"' : '') + '>' + esc(t) + '</a>').join('') + '</div>';
 }
 
