@@ -1,7 +1,7 @@
 # Naazhigai – Tamil Calendar 2026 (static site)
 
-A complete Tamil calendar website in the "Bold Poster" design: 916 pages
-(458 English + 458 Tamil), built as plain HTML so it is fast, cheap to host and easy for Google to read.
+A complete Tamil calendar website in the "Bold Poster" design (light theme only): 1056 pages
+in English and Tamil, with 2027 versions of every list page under `/2027/`, built as plain HTML so it is fast, cheap to host and easy for Google to read.
 
 "Naazhigai" is a placeholder brand. Change it in `site.config.js`.
 
@@ -70,8 +70,11 @@ GitHub Pages, or plain nginx/Apache. `404.html`, `sitemap.xml` and `robots.txt` 
 - **Nalla Neram** is calculated: the good Gowri parts between sunrise and 10 PM, with Rahu Kalam and
   Yamagandam removed. Printed wall calendars use their own Nalla Neram, so times can differ. Each page explains this.
 - Ramzan, Bakrid, Muharram and Milad-un-Nabi dates follow the Government list and may be revised after moon sighting.
-- For 2027: change `year` in `site.config.js`, add `data/muhurtham-2027.json` and `data/festivals-2027.json`,
-  check `tamilYearStart/Old/New` and `monthStartOverrides`, then rebuild.
+- 2027 list pages (timings, muhurtham, viratham, tithi, festivals, holidays, Tamil months, retrograde) are built
+  from `data/muhurtham-2027.json` (63 dates) and `data/festivals-2027.json` (TN Govt G.O. dated 22 Oct 2026).
+  Daily and monthly pages exist for 2026 only, so 2027 dates are not links.
+- To make 2027 the main year in January: set `year: 2027`, `extraYears: [2028]` (with its data files), rebuild.
+- Dev/review build: `node src/build.js --dev --base=/naazhigai-preview` (noindex everywhere).
 
 ## Changing the city
 

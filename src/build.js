@@ -23,34 +23,51 @@ const OTHER = arg('other', '');
 const DEV = process.argv.includes('--dev');            // review build: noindex everywhere
 const BASE = arg('base', '').replace(/\/$/, '');      // e.g. /naazhigai-dev when hosted under a sub-path
 const OUT = path.join(ROOT, 'dist', DEV ? 'dev' : TARGET);
-const Y = cfg.year;
-
-const muhurtham = require('../data/muhurtham-' + Y + '.json').dates.map(([date, type]) => ({ date, type }));
-const festivals = require('../data/festivals-' + Y + '.json').items;
-const M = buildModel(Object.assign({}, cfg, { muhurtham, festivals }));
-const DAYS = M.days;
+const PRIMARY = cfg.year;                                   // daily + monthly pages exist for this year only
+const YEARS = [PRIMARY].concat(PREVIEW ? [] : (cfg.extraYears || []));
+// pages that exist for every year (the rest: home, daily, monthly, soolam, about pages are primary-year only)
+const YEARABLE = new Set(['timings', 'nalla-neram', 'gowri-nalla-neram', 'rahu-kalam', 'yamagandam', 'kuligai-neram',
+  'muhurtham-dates', 'subha-muhurtham-dates', 'valarpirai-muhurtham-dates', 'theipirai-muhurtham-dates',
+  'viratham', 'pradosham-dates', 'sankatahara-chaturthi-dates', 'sashti-viratham-dates', 'karthigai-viratham-dates',
+  'chaturthi-viratham-dates', 'shivaratri-dates', 'thiruvonam-dates', 'chandra-darshan-dates',
+  'tithi', 'pournami', 'amavasya', 'ashtami-navami', 'ashtami-navami-dashami', 'valarpirai-ashtami', 'theipirai-ashtami',
+  'valarpirai-dates', 'theipirai-dates', 'tamil-holidays', 'tamil-festivals', 'tamil-months', 'retrograde',
+  'prathamai-tithi', 'dwitiya-tithi', 'tritiya-tithi', 'chaturthi-tithi', 'panchami-tithi', 'sashti-tithi', 'saptami-tithi',
+  'ashtami-tithi', 'navami-tithi', 'dashami-tithi', 'ekadashi-tithi', 'dwadashi-tithi', 'trayodashi-tithi', 'chaturdashi-tithi']);
+const MODELS = {};
+for (const y of YEARS) {
+  const mu = require('../data/muhurtham-' + y + '.json').dates.map(([date, type]) => ({ date, type }));
+  const fe = require('../data/festivals-' + y + '.json').items;
+  MODELS[y] = { govtCount: require('../data/festivals-' + y + '.json').govtHolidayCount, muhurtham: mu, festivals: fe, M: buildModel(Object.assign({}, cfg, { year: y, muhurtham: mu, festivals: fe })) };
+}
+let Y, M, DAYS, BUILD_KEY, muhurtham, festivals;
 const inYear = (k) => k.slice(0, 4) === String(Y);
-const BUILD_KEY = inYear(TODAY) ? TODAY : (TODAY < Y + '-01-01' ? Y + '-01-01' : Y + '-12-31');
+const hasDay = (k) => k.slice(0, 4) === String(PRIMARY);   // a daily page exists for this date
 const esc = F.esc;
+function setYear(y) {
+  Y = y; M = MODELS[y].M; DAYS = M.days; muhurtham = MODELS[y].muhurtham; festivals = MODELS[y].festivals;
+  BUILD_KEY = inYear(TODAY) ? TODAY : (y === PRIMARY ? (TODAY < y + '-01-01' ? y + '-01-01' : y + '-12-31') : TODAY);
+}
+setYear(PRIMARY);
 
 // ---------------- routing ----------------
 function href(lang, r) {
   if (PREVIEW) {
     if (r.p === 'home') return 'index.html';
-    if (r.p === 'page') return r.s + '.html';
+    if (r.p === 'page') return r.s + (r.y && r.y !== PRIMARY ? '-' + r.y : '') + '.html';
     if (r.p === 'day') return 'day-' + F.slugDay(r.k) + '.html';
-    if (r.p === 'month') return 'month-' + F.slugMonth(Y, r.m) + '.html';
-    if (r.p === 'sub') return r.s + '-' + F.slugMonth(Y, r.m) + '.html';
+    if (r.p === 'month') return 'month-' + F.slugMonth(PRIMARY, r.m) + '.html';
+    if (r.p === 'sub') return r.s + '-' + F.slugMonth(r.y, r.m) + '.html';
   }
   return prodHref(lang, r);
 }
 function prodHref(lang, r) {
   const base = BASE + (lang === 'ta' ? '/tamil' : '');
   if (r.p === 'home') return base + '/';
-  if (r.p === 'page') return base + '/' + r.s + '/';
+  if (r.p === 'page') return base + (r.y && r.y !== PRIMARY ? '/' + r.y : '') + '/' + r.s + '/';
   if (r.p === 'day') return base + '/tamil-daily-calendar/' + F.slugDay(r.k) + '/';
-  if (r.p === 'month') return base + '/tamil-monthly-calendar/' + F.slugMonth(Y, r.m) + '/';
-  if (r.p === 'sub') return base + '/' + r.s + '/' + F.slugMonth(Y, r.m) + '/';
+  if (r.p === 'month') return base + '/tamil-monthly-calendar/' + F.slugMonth(PRIMARY, r.m) + '/';
+  if (r.p === 'sub') return base + '/' + r.s + '/' + F.slugMonth(r.y, r.m) + '/';
 }
 function outFile(lang, r) {
   if (r.p === 'page' && r.s === '404') return path.join(OUT, PREVIEW ? '404.html' : (lang === 'ta' ? 'tamil/404.html' : '404.html'));
@@ -59,10 +76,13 @@ function outFile(lang, r) {
 }
 const asset = (name) => (PREVIEW ? name : BASE + '/assets/' + name);
 const abs = (lang, r) => cfg.domain + prodHref(lang, r).slice(BASE.length);
-const pg = (s) => ({ p: 'page', s });
+const pg = (s) => ({ p: 'page', s, y: YEARABLE.has(s) ? Y : PRIMARY });
+const pgY = (s, y) => ({ p: 'page', s, y });
 const day = (k) => ({ p: 'day', k });
 const mon = (m) => ({ p: 'month', m });
-const sub = (s, m) => ({ p: 'sub', s, m });
+const sub = (s, m) => ({ p: 'sub', s, m, y: Y });
+const hdl = (lang, k) => (hasDay(k) ? href(lang, day(k)) : '');
+const dayLink = (lang, k, txt) => hasDay(k) ? '<a href="' + href(lang, day(k)) + '">' + txt + '</a>' : txt;
 
 // ---------------- small helpers ----------------
 const ctx = (lang) => ({ y: Y, c: cfg.location.name[lang], b: cfg.brand[lang] });
@@ -113,8 +133,10 @@ function rec(d, lang) {
     nu: inYear(nextK) ? href(lang, day(nextK)) : '', nl: F.fmtD(nextK, lang, 'short')
   };
 }
-const RECS = {};
-for (const lang of LANGS) RECS[lang] = DAYS.map((d) => rec(d, lang));
+let RECS = {};
+const RECS_BY_YEAR = {};
+function makeRecs() { if (!RECS_BY_YEAR[Y]) { RECS_BY_YEAR[Y] = {}; for (const lang of LANGS) RECS_BY_YEAR[Y][lang] = DAYS.map((d) => rec(d, lang)); } RECS = RECS_BY_YEAR[Y]; }
+makeRecs();
 const recOf = (lang, k) => RECS[lang][DAYS.findIndex((d) => d.key === k)];
 
 // ---------------- HTML building blocks ----------------
@@ -124,8 +146,8 @@ function table(head, rows, opt) {
     (opt.caption ? '<caption class="sr">' + esc(opt.caption) + '</caption>' : '') +
     '<thead><tr>' + head.map((h) => '<th scope="col">' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div></div>';
 }
-const dateCell = (lang, d) => '<td class="nw"><a href="' + href(lang, day(d.key)) + '"><time datetime="' + d.key + '">' + F.fmtD(d.key, lang, 'med') + '</time></a><small>' + esc(N.WEEKDAY[d.dow][lang]) + '</small></td>';
-const rowAttrs = (lang, d, e, label) => ' data-d="' + d.key + '"' + (e ? ' data-e="' + e.key + '"' : '') + ' data-t="' + esc(label || (F.fmtD(d.key, lang, 'wd') + ' · ' + tdShort(d, lang))) + '" data-h="' + href(lang, day(d.key)) + '"' + (d.key === BUILD_KEY || (e && d.key <= BUILD_KEY && e.key >= BUILD_KEY) ? ' class="is-today"' : '');
+const dateCell = (lang, d) => '<td class="nw">' + dayLink(lang, d.key, '<time datetime="' + d.key + '">' + F.fmtD(d.key, lang, 'med') + '</time>') + '<small>' + esc(N.WEEKDAY[d.dow][lang]) + '</small></td>';
+const rowAttrs = (lang, d, e, label) => ' data-d="' + d.key + '"' + (e ? ' data-e="' + e.key + '"' : '') + ' data-t="' + esc(label || (F.fmtD(d.key, lang, 'wd') + ' · ' + tdShort(d, lang))) + '" data-h="' + (hasDay(d.key) ? href(lang, day(d.key)) : '') + '"' + (d.key === BUILD_KEY || (e && d.key <= BUILD_KEY && e.key >= BUILD_KEY) ? ' class="is-today"' : '');
 const sec = (id, h, note, inner) => '<section class="sec" aria-labelledby="' + id + '"><h2 id="' + id + '">' + h + '</h2>' + (note ? '<p class="note">' + note + '</p>' : '') + inner + '</section>';
 const tag = (cls, txt) => '<span class="tag' + (cls ? ' ' + cls : '') + '">' + esc(txt) + '</span>';
 
@@ -135,7 +157,7 @@ function highlights(lang, tid, items) { // items: [{s:key,e:key,label,h}]
   const now = items.find((x) => x.s <= BUILD_KEY && (x.e || x.s) >= BUILD_KEY);
   const next = items.find((x) => x.s > BUILD_KEY);
   const prev = items.slice().reverse().find((x) => (x.e || x.s) < BUILD_KEY);
-  const cell = (x) => x ? '<a href="' + x.h + '">' + esc(x.label) + '</a>' : esc(Lx.none);
+  const cell = (x) => x ? (x.h ? '<a href="' + x.h + '">' + esc(x.label) + '</a>' : esc(x.label)) : esc(Lx.none);
   return '<div class="hl" data-hl="list" data-hl-for="' + tid + '" data-none="' + esc(Lx.none) + '" data-no="' + esc(Lx.notToday) + '" data-yes="' + esc(Lx.isTodayLong) + '">' +
     '<div class="box hl-now"><div class="lbl">' + esc(Lx.todayQ) + '</div><strong data-slot="now">' + (now ? esc(Lx.isTodayLong) : esc(Lx.notToday)) + '</strong></div>' +
     '<div class="box"><div class="lbl">' + esc(Lx.nextDate) + '</div><strong data-slot="next">' + cell(next) + '</strong></div>' +
@@ -207,14 +229,14 @@ function shell(lang, r, o) {
     '<div><span class="brand">' + esc(cfg.brand[lang]) + '</span><p style="margin:10px 0 0;font-size:15px">' + esc(Lx.footerAbout) + '</p></div>' +
     GROUPS.filter((g) => g[0] !== 'tithi').map((g) => '<div><strong>' + esc(GROUP_TITLE[g[0]][lang === 'en' ? 0 : 1]) + '</strong><ul>' + g[1].map((it) => '<li>' + glink(lang, it) + '</li>').join('') + '</ul></div>').join('') +
     '</div><p class="fine">' + esc(T(lang, Lx.fine)) + '</p></div></footer>';
-  const cfgJs = { lang, y: Y, today: BUILD_KEY, day: PREVIEW ? 'day-__SLUG__.html' : BASE + (lang === 'ta' ? '/tamil' : '') + '/tamil-daily-calendar/__SLUG__/', city: cfg.location.name[lang], wd: N.WEEKDAY.map((w) => w[lang]), mon: lang === 'en' ? N.GMONTH_SHORT : N.GMONTH.map((m) => m.ta), monEn: N.GMONTH.map((m) => m.en.toLowerCase()), todayWord: Lx.today };
+  const cfgJs = { lang, y: Y, dy: PRIMARY, today: BUILD_KEY, day: PREVIEW ? 'day-__SLUG__.html' : BASE + (lang === 'ta' ? '/tamil' : '') + '/tamil-daily-calendar/__SLUG__/', city: cfg.location.name[lang], wd: N.WEEKDAY.map((w) => w[lang]), mon: lang === 'en' ? N.GMONTH_SHORT : N.GMONTH.map((m) => m.ta), monEn: N.GMONTH.map((m) => m.en.toLowerCase()), todayWord: Lx.today };
   const hreflang = (PREVIEW || o.noindex) ? '' : '<link rel="alternate" hreflang="en" href="' + abs('en', r) + '"><link rel="alternate" hreflang="ta" href="' + abs('ta', r) + '"><link rel="alternate" hreflang="x-default" href="' + abs('en', r) + '">';
   return '<!doctype html>\n<html lang="' + lang + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' +
     '<title>' + esc(title) + '</title><meta name="claude:viewport-fit-sides" content="cover">' +
     '<meta name="description" content="' + esc(desc) + '">' + ((o.noindex || DEV) ? '<meta name="robots" content="noindex,nofollow">' : '') +
     (o.noindex ? '' : '<link rel="canonical" href="' + canon + '">' + hreflang) +
     '<meta property="og:type" content="website"><meta property="og:site_name" content="' + esc(cfg.brand[lang]) + '"><meta property="og:title" content="' + esc(title) + '"><meta property="og:description" content="' + esc(desc) + '"><meta property="og:url" content="' + canon + '"><meta property="og:locale" content="' + (lang === 'en' ? 'en_IN' : 'ta_IN') + '"><meta name="twitter:card" content="summary">' +
-    '<meta name="theme-color" content="#FFC21A"><link rel="icon" href="' + asset('favicon.svg') + '" type="image/svg+xml">' +
+    '<meta name="color-scheme" content="only light"><meta name="theme-color" content="#FFC21A"><link rel="icon" href="' + asset('favicon.svg') + '" type="image/svg+xml">' +
     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Hind+Madurai:wght@400;600;700&display=swap">' +
     '<link rel="stylesheet" href="' + asset('site.css') + '">' +
@@ -224,7 +246,9 @@ function shell(lang, r, o) {
     '<div class="strip"><div class="wrap"><span><a data-nz-today href="' + href(lang, day(BUILD_KEY)) + '">' + esc(Lx.today) + ' · ' + esc(F.fmtD(BUILD_KEY, lang, 'wd')) + '</a> · ' + esc(cfg.location.name[lang]) + '</span>' + langLinks + '</div></div>' +
     '<header class="site"><div class="wrap"><a class="logo" href="' + href(lang, { p: 'home' }) + '">' + LOGO + '<span><b>' + esc(cfg.brand[lang]) + '</b><small>' + esc(lang === 'en' ? 'Tamil calendar ' + Y : 'தமிழ் காலண்டர் ' + Y) + '</small></span></a>' + nav + '</div></header>' +
     '<main id="main"><div class="wrap">' + crumbHtml +
-    '<h1 class="page">' + T(lang, o.h1, o.vars) + '</h1>' + (o.lead ? '<p class="lead">' + esc(T(lang, o.lead, o.vars)) + '</p>' : '') +
+    '<h1 class="page">' + T(lang, o.h1, o.vars) + '</h1>' +
+    (o.years && o.years.length > 1 ? '<nav class="years" aria-label="' + (lang === 'en' ? 'Year' : 'ஆண்டு') + '">' + o.years.map(([y, rr]) => '<a class="chip' + (y === Y ? ' cur' : '') + '" href="' + href(lang, rr) + '"' + (y === Y ? ' aria-current="page"' : '') + '>' + y + '</a>').join('') + '</nav>' : '') +
+    (o.lead ? '<p class="lead">' + esc(T(lang, o.lead, o.vars)) + '</p>' : '') +
     o.body + (o.faq ? faqBlock(lang, o.faq.map(([q, a]) => [T(lang, q, o.vars), T(lang, a, o.vars)])) : '') +
     '</div></main>' + footer +
     '<script>window.NZ_CFG=' + JSON.stringify(cfgJs).replace(/</g, '\\u003c') + ';</script>' +
@@ -240,6 +264,7 @@ function stdPage(lang, slug, body, extra) {
   const c = copyOf(slug, lang);
   const o = Object.assign({ title: c.title, h1: c.h1, desc: c.desc, lead: c.lead, crumbs: [[stripTags(T(lang, c.h1, (extra || {}).vars)), pg(slug)]], body, navCur: slug }, extra || {});
   if (C[slug].faq && !o.faq) o.faq = C[slug].faq[lang];
+  if (YEARABLE.has(slug)) o.years = YEARS.map((y) => [y, pgY(slug, y)]);
   emit(lang, pg(slug), o);
 }
 const stripTags = (s) => String(s).replace(/<[^>]+>/g, '');
@@ -385,9 +410,9 @@ function buildTimings(lang) {
     const monthTable = (m, id) => table(K.head, DAYS.filter((d) => F.parts(d.key).m === m).map((d) => '<tr' + rowAttrs(lang, d) + '>' + dateCell(lang, d) + '<td>' + esc(tdShort(d, lang)) + '<small>' + esc(N.PIRAI[d.pirai][lang] + ' · ' + N.TITHI[d.tithi][lang]) + '</small></td>' + K.cells(d) + '</tr>'), { id, caption: N.GMONTH[m - 1][lang] + ' ' + Y });
     const subChips = (cur) => '<div class="chips">' + N.GMONTH.map((g, i) => '<a class="chip" href="' + href(lang, sub(slug, i + 1)) + '"' + (cur === i + 1 ? ' aria-current="page"' : '') + '>' + esc(g[lang]) + '</a>').join('') + '</div>';
     const hv = {}; for (const d of DAYS) hv[d.key] = K.v(d);
-    const bm = F.parts(BUILD_KEY).m;
+    const bm = inYear(TODAY) ? F.parts(TODAY).m : 1;
     const c = copyOf(slug, lang);
-    let body = dayHighlights(lang, 'yt', K.v) + '<script type="application/json" id="nz-hv">' + JSON.stringify(hv).replace(/</g, '\\u003c') + '</script>' + methodBox(lang, C[slug].method[lang]) +
+    let body = (inYear(TODAY) ? dayHighlights(lang, 'yt', K.v) : '') + '<script type="application/json" id="nz-hv">' + JSON.stringify(hv).replace(/</g, '\\u003c') + '</script>' + methodBox(lang, C[slug].method[lang]) +
       sec('this', esc(N.GMONTH[bm - 1][lang] + ' ' + Y), '<a href="' + href(lang, sub(slug, bm)) + '">' + esc(lang === 'en' ? 'Open the ' + N.GMONTH[bm - 1].en + ' page' : N.GMONTH[bm - 1].ta + ' பக்கம்') + ' →</a>', monthTable(bm, 'yt')) +
       sec('bm', esc(Lx.byMonth), '', subChips(0));
     if (slug === 'nalla-neram') body += sec('mud', esc(lang === 'en' ? 'Nalla Neram on muhurtham days' : 'முகூர்த்த நாட்களில் நல்ல நேரம்'), '', table([Lx.date, Lx.tamilDate, Lx.muhurtham, Lx.nalla], DAYS.filter((d) => d.muhurtham).map((d) => '<tr' + rowAttrs(lang, d) + '>' + dateCell(lang, d) + '<td>' + esc(tdShort(d, lang)) + '</td><td>' + tag(isSubha(d) ? 'g' : 'y', muLabel(d, lang)) + '</td><td class="nw">' + RECS[lang][DAYS.indexOf(d)].nla.map(esc).join('<br>') + '</td></tr>')));
@@ -401,7 +426,7 @@ function buildTimings(lang) {
         sec('bm', esc(Lx.byMonth), '', subChips(m));
       const title = lang === 'en' ? name + ' ' + mn + ' – Daily Timings for ' + cfg.location.name.en : name + ' ' + mn + ' – தினசரி நேரங்கள்';
       const desc = lang === 'en' ? name + ' for every day of ' + mn + ' in ' + cfg.location.name.en + ', with Tamil date and tithi. Calculated from local sunrise and sunset.' : mn + ' மாதத்தின் ஒவ்வொரு நாளுக்குமான ' + name + ' – ' + cfg.location.name.ta + ', தமிழ் தேதி, திதியுடன். உள்ளூர் சூரிய உதயம், அஸ்தமனப்படி.';
-      emit(lang, sub(slug, m), { title, desc, h1: esc(name) + ' <mark>' + esc(mn) + '</mark>', lead: T(lang, c.lead), body: mbody, navCur: slug === 'nalla-neram' ? 'nalla-neram' : 'timings', crumbs: [[base, pg(slug)], [mn, sub(slug, m)]] });
+      emit(lang, sub(slug, m), { title, desc, h1: esc(name) + ' <mark>' + esc(mn) + '</mark>', lead: T(lang, c.lead), body: mbody, navCur: slug === 'nalla-neram' ? 'nalla-neram' : 'timings', crumbs: [[base, pg(slug)], [mn, sub(slug, m)]], years: YEARS.map((y) => [y, { p: 'sub', s: slug, m, y }]) });
     }
   }
   // Rahu / Yama / Kuligai
@@ -409,12 +434,12 @@ function buildTimings(lang) {
     const v = (d) => F.range(d[key].start, d[key].end, d.key, Lx);
     const todayDow = F.parts(BUILD_KEY).dow;
     const wk = table([Lx.weekday, Lx[key === 'kuligai' ? 'kuligai' : key]], [0, 1, 2, 3, 4, 5, 6].map((w) => '<tr data-dow="' + w + '"' + (w === todayDow ? ' class="is-today"' : '') + '><th scope="row">' + esc(N.WEEKDAY[w][lang]) + '</th><td class="nw">' + fixedRange(arr[w]) + '</td></tr>'));
-    const body = dayHighlights(lang, 'yt', v) + sec('wk', esc(lang === 'en' ? 'Weekday table' : 'கிழமை அட்டவணை'), '', wk) +
+    const body = (inYear(TODAY) ? dayHighlights(lang, 'yt', v) : '') + sec('wk', esc(lang === 'en' ? 'Weekday table' : 'கிழமை அட்டவணை'), '', wk) +
       '<section class="sec">' + yearTables(lang, 'yt', [Lx.date, Lx.tamilDate, Lx[key === 'kuligai' ? 'kuligai' : key]], (d) => '<tr data-d="' + d.key + '" data-v="' + esc(v(d)) + '"' + (d.key === BUILD_KEY ? ' class="is-today"' : '') + '>' + dateCell(lang, d) + '<td>' + esc(tdShort(d, lang)) + '</td><td class="nw">' + v(d) + '</td></tr>') + '</section>';
     stdPage(lang, slug, body);
   }
-  // Soolam
-  {
+  // Soolam (same every year: primary year only)
+  if (Y === PRIMARY) {
     const todayDow = F.parts(BUILD_KEY).dow;
     const rows = [0, 1, 2, 3, 4, 5, 6].map((w) => '<tr data-dow="' + w + '"' + (w === todayDow ? ' class="is-today"' : '') + '><th scope="row">' + esc(N.WEEKDAY[w][lang]) + '</th><td>' + esc(N.SOOLAM[w].dir[lang]) + '</td><td>' + esc(N.SOOLAM[w].par[lang]) + '</td></tr>');
     const body = table([Lx.weekday, Lx.soolam + ' (' + Lx.direction + ')', Lx.pariharam], rows) +
@@ -423,12 +448,13 @@ function buildTimings(lang) {
   }
   // Timings hub
   {
-    const r0 = recOf(lang, BUILD_KEY);
+    const r0 = Y === PRIMARY ? recOf(lang, BUILD_KEY) : null;
     const cards = GROUPS[1][1].slice(1).map((it) => '<a class="box" href="' + href(lang, pg(it[0])) + '" style="display:block;padding:20px 22px;text-decoration:none;color:var(--ink)"><strong class="disp" style="font-size:24px">' + esc(lang === 'en' ? it[1] : it[2]) + '</strong><span style="display:block;color:var(--muted)">' + esc(T(lang, C[it[0]][lang].lead)).slice(0, 110) + (T(lang, C[it[0]][lang].lead).length > 110 ? '…' : '') + '</span></a>').join('');
-    const body = '<div data-nz="bento" data-nz-key="' + BUILD_KEY + '">' + S.bento(r0, Lx, { nav: false, link: true }) + '</div>' +
+    const showToday = Y === PRIMARY && inYear(TODAY);
+    const body = (showToday ? '<div data-nz="bento" data-nz-key="' + BUILD_KEY + '">' + S.bento(r0, Lx, { nav: false, link: true }) + '</div>' : '') +
       sec('pages', esc(lang === 'en' ? 'Timing pages' : 'நேரப் பக்கங்கள்'), '', '<div class="count">' + cards + '</div>') +
       sec('wk', esc(Lx.weekly), esc(Lx.weeklyNote), weeklyTable(lang));
-    stdPage(lang, 'timings', body, { data: true });
+    stdPage(lang, 'timings', body, { data: showToday });
   }
 }
 
@@ -442,11 +468,11 @@ function buildMuhurtham(lang) {
   const all = DAYS.filter((d) => d.muhurtham);
   const sets = [['muhurtham-dates', all], ['subha-muhurtham-dates', all.filter(isSubha)], ['valarpirai-muhurtham-dates', all.filter((d) => d.pirai === 'V')], ['theipirai-muhurtham-dates', all.filter((d) => d.pirai === 'T')]];
   for (const [slug, list] of sets) {
-    const items = list.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + tdShort(d, lang), h: href(lang, day(d.key)) }));
+    const items = list.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + tdShort(d, lang), h: hdl(lang, d.key) }));
     const byM = N.GMONTH.map((g, i) => [g[lang], list.filter((d) => F.parts(d.key).m === i + 1).length, i + 1]).filter((x) => x[1] > 0);
     const body = highlights(lang, 'mt', items) +
       sec('list', esc(T(lang, copyOf(slug, lang).h1)), '', muTable(lang, list, 'mt')) +
-      sec('bm', esc(Lx.byMonth), '', '<div class="chips">' + byM.map((x) => '<a class="chip" href="' + href(lang, mon(x[2])) + '">' + esc(x[0]) + ' · ' + x[1] + '</a>').join('') + '</div>') +
+      sec('bm', esc(Lx.byMonth), '', '<div class="chips">' + byM.map((x) => Y === PRIMARY ? '<a class="chip" href="' + href(lang, mon(x[2])) + '">' + esc(x[0]) + ' · ' + x[1] + '</a>' : '<span class="chip">' + esc(x[0]) + ' · ' + x[1] + '</span>').join('') + '</div>') +
       sec('rel', esc(lang === 'en' ? 'More muhurtham lists' : 'மேலும் முகூர்த்தப் பட்டியல்கள்'), '', '<div class="chips">' + GROUPS[2][1].map((it) => '<a class="chip" href="' + href(lang, pg(it[0])) + '"' + (it[0] === slug ? ' aria-current="page"' : '') + '>' + esc(lang === 'en' ? it[1] : it[2]) + '</a>').join('') + '</div>') +
       (C['muhurtham-dates'].method ? '<div style="margin-top:28px">' + methodBox(lang, C['muhurtham-dates'].method[lang]) + '</div>' : '');
     const vars = { n: list.length, s: all.filter(isSubha).length };
@@ -468,7 +494,7 @@ function buildViratham(lang) {
     ['chandra-darshan-dates', M.lists.chandraDarshan, [Lx.date, Lx.tamilDate, Lx.sunset, Lx.moonset], (x) => ['<td class="nw">' + F.fmtT(x.d.sunset) + '</td>', '<td class="nw">' + (x.moonset ? F.fmtT(x.moonset) : '–') + '</td>']]
   ];
   for (const [slug, list, head, cells] of defs) {
-    const items = list.map((x) => ({ s: x.d.key, label: F.fmtD(x.d.key, lang, 'wd') + ' · ' + tdShort(x.d, lang), h: href(lang, day(x.d.key)) }));
+    const items = list.map((x) => ({ s: x.d.key, label: F.fmtD(x.d.key, lang, 'wd') + ' · ' + tdShort(x.d, lang), h: hdl(lang, x.d.key) }));
     const rows = list.map((x) => '<tr' + rowAttrs(lang, x.d) + '>' + dateCell(lang, x.d) + '<td>' + esc(tdShort(x.d, lang)) + '</td>' + cells(x).join('') + '</tr>');
     const body = highlights(lang, 'vt', items) + (C[slug].method ? methodBox(lang, C[slug].method[lang]) : '') +
       sec('list', esc(T(lang, copyOf(slug, lang).h1)), '', table(head, rows, { id: 'vt' })) +
@@ -477,7 +503,7 @@ function buildViratham(lang) {
   }
   // hub
   const vd = DAYS.filter((d) => d.virathams.length);
-  const items = vd.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + d.virathams.map((v) => vName(v, lang)).join(', '), h: href(lang, day(d.key)) }));
+  const items = vd.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + d.virathams.map((v) => vName(v, lang)).join(', '), h: hdl(lang, d.key) }));
   const rows = vd.map((d) => '<tr' + rowAttrs(lang, d) + '>' + dateCell(lang, d) + '<td>' + esc(tdShort(d, lang)) + '<small>' + esc(N.PIRAI[d.pirai][lang] + ' · ' + N.TITHI[d.tithi][lang]) + '</small></td><td>' + d.virathams.map((v) => tag(v.label ? 'y' : '', vName(v, lang))).join(' ') + '</td></tr>');
   const body = highlights(lang, 'vt', items) + sec('types', esc(lang === 'en' ? 'Viratham types' : 'விரத வகைகள்'), '', '<div class="chips">' + GROUPS[3][1].slice(1).map((it) => '<a class="chip" href="' + href(lang, pg(it[0])) + '">' + esc(lang === 'en' ? it[1] : it[2]) + '</a>').join('') + '</div>') +
     sec('list', esc(T(lang, copyOf('viratham', lang).h1)), '', table([Lx.date, Lx.tamilDate, Lx.viratham], rows, { id: 'vt' }));
@@ -496,10 +522,10 @@ function buildTithi(lang) {
   const head = [Lx.date, Lx.tamilDate, Lx.pirai + ' · ' + Lx.tithi, Lx.tithi + ' ' + Lx.ends];
   const listPage = (slug, list, title, h1raw, desc, lead) => {
     const h1 = T(lang, h1raw, { n: list.length });
-    const items = list.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + N.PIRAI[d.pirai][lang] + ' ' + N.TITHI[d.tithi][lang], h: href(lang, day(d.key)) }));
+    const items = list.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + N.PIRAI[d.pirai][lang] + ' ' + N.TITHI[d.tithi][lang], h: hdl(lang, d.key) }));
     const body = highlights(lang, 'tt', items) + methodBox(lang, C.tithi.method[lang]) + sec('list', esc(stripTags(h1)), '', table(head, tithiRows(lang, list), { id: 'tt' })) +
       sec('rel', esc(lang === 'en' ? 'Other tithi' : 'பிற திதிகள்'), '', tithiChips(lang, slug));
-    const o = { title, h1, desc, lead, body, crumbs: [[lang === 'en' ? 'Tithi' : 'திதி', pg('tithi')], [stripTags(h1), pg(slug)]], navCur: 'tithi', vars: { n: list.length } };
+    const o = { title, h1, desc, lead, body, crumbs: [[lang === 'en' ? 'Tithi' : 'திதி', pg('tithi')], [stripTags(h1), pg(slug)]], navCur: 'tithi', vars: { n: list.length }, years: YEARS.map((y) => [y, pgY(slug, y)]) };
     emit(lang, pg(slug), o);
   };
   for (const [slug, idx] of TITHI_PAGES) {
@@ -519,11 +545,11 @@ function buildTithi(lang) {
   // Pournami / Amavasai
   for (const [slug, key, i] of [['pournami', 'pournami', 14], ['amavasya', 'amavasai', 29]]) {
     const list = M.moonDays[key];
-    const items = list.map((x) => ({ s: x.days[0].key, e: x.days[x.days.length - 1].key, label: x.days.map((d) => F.fmtD(d.key, lang, 'wd')).join(' + ') + ' · ' + tdShort(x.days[0], lang), h: href(lang, day(x.days[0].key)) }));
+    const items = list.map((x) => ({ s: x.days[0].key, e: x.days[x.days.length - 1].key, label: x.days.map((d) => F.fmtD(d.key, lang, 'wd')).join(' + ') + ' · ' + tdShort(x.days[0], lang), h: hdl(lang, x.days[0].key) }));
     const rows = list.map((x) => {
       const d = x.days[0], e = x.days[x.days.length - 1];
       const names = [N.TMONTH[d.tamilMonth][lang] + ' ' + N.TITHI[i][lang]].concat(x.days.flatMap((dd) => dd.festivals.map((f) => f[lang])));
-      const dates = x.days.map((dd) => '<a href="' + href(lang, day(dd.key)) + '"><time datetime="' + dd.key + '">' + F.fmtD(dd.key, lang, 'med') + '</time></a>').join(' +<br>');
+      const dates = x.days.map((dd) => dayLink(lang, dd.key, '<time datetime="' + dd.key + '">' + F.fmtD(dd.key, lang, 'med') + '</time>')).join(' +<br>');
       return '<tr' + rowAttrs(lang, d, e.key !== d.key ? e : null, items[list.indexOf(x)].label) + '><td class="nw">' + dates + '<small>' + esc(x.days.map((dd) => N.WEEKDAY[dd.dow][lang]).join(' + ')) + '</small></td><td>' + esc(x.days.map((dd) => tdShort(dd, lang)).join(' + ')) + '</td><td class="nw">' + esc(dateTime(x.seg.start, lang)) + '</td><td class="nw">' + esc(dateTime(x.seg.end, lang)) + '</td><td>' + esc(Array.from(new Set(names)).join(', ')) + '</td></tr>';
     });
     const body = highlights(lang, 'mt', items) + methodBox(lang, C.tithi.method[lang]) +
@@ -536,8 +562,8 @@ function buildTithi(lang) {
     const runs = [];
     let cur = null;
     for (const d of DAYS) { if (d.pirai === P) { if (!cur) { cur = [d, d]; runs.push(cur); } else cur[1] = d; } else cur = null; }
-    const items = runs.map(([a, b]) => ({ s: a.key, e: b.key, label: F.fmtD(a.key, lang, 'short') + ' – ' + F.fmtD(b.key, lang, 'med'), h: href(lang, day(a.key)) }));
-    const rows = runs.map(([a, b], j) => '<tr' + rowAttrs(lang, a, b, items[j].label) + '><td class="nw"><a href="' + href(lang, day(a.key)) + '">' + F.fmtD(a.key, lang, 'med') + '</a><small>' + esc(tdShort(a, lang)) + '</small></td><td class="nw"><a href="' + href(lang, day(b.key)) + '">' + F.fmtD(b.key, lang, 'med') + '</a><small>' + esc(tdShort(b, lang)) + '</small></td><td class="tnum">' + (Math.round((Date.parse(b.key) - Date.parse(a.key)) / 86400000) + 1) + '</td><td>' + esc(N.TITHI[b.tithi][lang]) + '</td></tr>');
+    const items = runs.map(([a, b]) => ({ s: a.key, e: b.key, label: F.fmtD(a.key, lang, 'short') + ' – ' + F.fmtD(b.key, lang, 'med'), h: hdl(lang, a.key) }));
+    const rows = runs.map(([a, b], j) => '<tr' + rowAttrs(lang, a, b, items[j].label) + '><td class="nw">' + dayLink(lang, a.key, F.fmtD(a.key, lang, 'med')) + '<small>' + esc(tdShort(a, lang)) + '</small></td><td class="nw">' + dayLink(lang, b.key, F.fmtD(b.key, lang, 'med')) + '<small>' + esc(tdShort(b, lang)) + '</small></td><td class="tnum">' + (Math.round((Date.parse(b.key) - Date.parse(a.key)) / 86400000) + 1) + '</td><td>' + esc(N.TITHI[b.tithi][lang]) + '</td></tr>');
     const body = highlights(lang, 'pt', items) + sec('list', esc(T(lang, copyOf(slug, lang).h1)), '', table([Lx.from, Lx.to, Lx.days, lang === 'en' ? 'Last tithi' : 'கடைசி திதி'], rows, { id: 'pt' })) +
       sec('rel', esc(lang === 'en' ? 'Other tithi' : 'பிற திதிகள்'), '', tithiChips(lang, slug));
     stdPage(lang, slug, body, { navCur: 'tithi', crumbs: [[lang === 'en' ? 'Tithi' : 'திதி', pg('tithi')], [stripTags(T(lang, copyOf(slug, lang).h1)), pg(slug)]] });
@@ -558,17 +584,17 @@ function buildCalendarInfo(lang) {
   const Lx = L[lang];
   // holidays (one row per date)
   const holDays = DAYS.filter((d) => d.festivals.some((f) => f.holiday));
-  const hItems = holDays.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + d.festivals.filter((f) => f.holiday).map((f) => f[lang]).join(' / '), h: href(lang, day(d.key)) }));
+  const hItems = holDays.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + d.festivals.filter((f) => f.holiday).map((f) => f[lang]).join(' / '), h: hdl(lang, d.key) }));
   const hRows = holDays.map((d, j) => { const fs = d.festivals.filter((f) => f.holiday); const bank = fs.every((f) => f.holiday === 'bank'); return '<tr' + rowAttrs(lang, d, null, hItems[j].label) + '>' + dateCell(lang, d) + '<td>' + esc(tdShort(d, lang)) + '<small>' + esc(N.PIRAI[d.pirai][lang] + ' · ' + N.TITHI[d.tithi][lang]) + '</small></td><td>' + esc(fs.map((f) => f[lang]).join(' / ')) + '</td><td>' + tag(bank ? 'y' : 'r', bank ? Lx.bankHoliday : Lx.publicHoliday) + (d.dow === 0 || d.dow === 6 ? ' ' + tag('', Lx.weekend) : '') + '</td></tr>'; });
-  stdPage(lang, 'tamil-holidays', highlights(lang, 'ht', hItems) + sec('list', esc(T(lang, copyOf('tamil-holidays', lang).h1)), '', table([Lx.date, Lx.tamilDate, Lx.holiday, Lx.type], hRows, { id: 'ht' })) + '<div style="margin-top:28px">' + methodBox(lang, C['tamil-holidays'].method[lang]) + '</div>', { vars: { n: holDays.length } });
+  stdPage(lang, 'tamil-holidays', highlights(lang, 'ht', hItems) + sec('list', esc(T(lang, copyOf('tamil-holidays', lang).h1)), '', table([Lx.date, Lx.tamilDate, Lx.holiday, Lx.type], hRows, { id: 'ht' })) + '<div style="margin-top:28px">' + methodBox(lang, C['tamil-holidays'].method[lang]) + '</div>', { vars: { n: MODELS[Y].govtCount || holDays.length } });
   // festivals
   const feDays = DAYS.filter((d) => d.festivals.length);
-  const fItems = feDays.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + d.festivals.map((f) => f[lang]).join(', '), h: href(lang, day(d.key)) }));
+  const fItems = feDays.map((d) => ({ s: d.key, label: F.fmtD(d.key, lang, 'wd') + ' · ' + d.festivals.map((f) => f[lang]).join(', '), h: hdl(lang, d.key) }));
   const fRows = feDays.map((d, j) => { const h = holidayOf(d); return '<tr' + rowAttrs(lang, d, null, fItems[j].label) + '>' + dateCell(lang, d) + '<td>' + esc(tdShort(d, lang)) + '</td><td>' + esc(N.PIRAI[d.pirai][lang] + ' · ' + N.TITHI[d.tithi][lang]) + '<small>' + esc(N.NAK[d.nak][lang]) + '</small></td><td>' + esc(d.festivals.map((f) => f[lang]).join(', ')) + '</td><td>' + (h ? tag(h === 'bank' ? 'y' : 'r', h === 'bank' ? Lx.bankHoliday : Lx.publicHoliday) : '–') + '</td></tr>'; });
   stdPage(lang, 'tamil-festivals', highlights(lang, 'ft', fItems) + sec('list', esc(T(lang, copyOf('tamil-festivals', lang).h1)), '', table([Lx.date, Lx.tamilDate, Lx.tithi + ' · ' + Lx.nak, Lx.festival, Lx.holiday], fRows, { id: 'ft' })), { vars: { n: festivals.length } });
   // Tamil months
-  const mItems = M.months.map((m) => ({ s: m.start, e: m.end, label: N.TMONTH[m.rasi][lang] + ' · ' + F.fmtD(m.start, lang, 'short') + ' – ' + F.fmtD(m.end, lang, 'med'), h: inYear(m.start) ? href(lang, day(m.start)) : href(lang, day(Y + '-01-01')) }));
-  const dlink = (k) => inYear(k) ? '<a href="' + href(lang, day(k)) + '">' + F.fmtD(k, lang, 'wd') + '</a>' : esc(F.fmtD(k, lang, 'wd'));
+  const mItems = M.months.map((m) => ({ s: m.start, e: m.end, label: N.TMONTH[m.rasi][lang] + ' · ' + F.fmtD(m.start, lang, 'short') + ' – ' + F.fmtD(m.end, lang, 'med'), h: hdl(lang, m.start) }));
+  const dlink = (k) => dayLink(lang, k, esc(F.fmtD(k, lang, 'wd')));
   const mRows = M.months.map((m, j) => '<tr data-d="' + m.start + '" data-e="' + m.end + '" data-t="' + esc(mItems[j].label) + '" data-h="' + mItems[j].h + '"' + (m.start <= BUILD_KEY && m.end >= BUILD_KEY ? ' class="is-today"' : '') + '><th scope="row">' + esc(N.TMONTH[m.rasi][lang]) + '<small>' + esc(N.TMONTH[m.rasi][lang === 'en' ? 'ta' : 'en'] + ' · ' + N.RASI[m.rasi][lang]) + '</small></th><td class="nw">' + dlink(m.start) + '</td><td class="nw">' + dlink(m.end) + '</td><td class="tnum">' + m.days + '</td><td class="nw">' + esc(dateTime(m.sankranti, lang)) + '</td></tr>');
   stdPage(lang, 'tamil-months', highlights(lang, 'tm', mItems).replace(esc(L[lang].isTodayLong), esc(L[lang].isTodayLong)) + methodBox(lang, C['tamil-months'].method[lang]) + sec('list', esc(T(lang, copyOf('tamil-months', lang).h1)), '', table([Lx.tamilMonth, Lx.starts, Lx.ends, Lx.days, Lx.sankranti], mRows, { id: 'tm' })));
   // retrograde
@@ -614,10 +640,14 @@ function buildSiteInfo(lang) {
 
 // ---------------- run ----------------
 fs.rmSync(OUT, { recursive: true, force: true });
-for (const lang of LANGS) {
-  buildHome(lang); buildDaily(lang); buildDailyIndex(lang); buildMonthly(lang); buildTimings(lang);
-  buildMuhurtham(lang); buildViratham(lang); buildTithi(lang); buildCalendarInfo(lang); buildSiteInfo(lang);
+for (const y of YEARS) {
+  setYear(y); makeRecs();
+  for (const lang of LANGS) {
+    if (y === PRIMARY) { buildHome(lang); buildDaily(lang); buildDailyIndex(lang); buildMonthly(lang); buildSiteInfo(lang); }
+    buildTimings(lang); buildMuhurtham(lang); buildViratham(lang); buildTithi(lang); buildCalendarInfo(lang);
+  }
 }
+setYear(PRIMARY); makeRecs();
 for (const p of pages) {
   const f = outFile(p.lang, p.r);
   fs.mkdirSync(path.dirname(f), { recursive: true });

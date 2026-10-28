@@ -17,7 +17,8 @@ function buildModel(cfg) {
   // ---------- per-day derived fields ----------
   for (const d of R.days) {
     d.pirai = d.tithi < 15 ? 'V' : 'T';
-    d.tamilYear = (d.key >= cfg.tamilYearStart) ? cfg.tamilYearNew : cfg.tamilYearOld;
+    const TY = cfg.years[d.key.slice(0, 4)] || cfg.years[cfg.year];
+    d.tamilYear = (d.key >= TY.tamilYearStart) ? TY.tamilYearNew : TY.tamilYearOld;
     // traditional fixed slots: values are clock hours (e.g. 15 = 3:00 PM), each 1.5 h long
     const fixed = (h) => { const s = new Date(E.istAt(d.key, 0, 0).getTime() + h * HOUR); return { start: s, end: new Date(s.getTime() + 1.5 * HOUR) }; };
     d.rahu = fixed(N.RAHU[d.dow]);
@@ -154,7 +155,12 @@ function buildModel(cfg) {
     }
   }
   // Nakshatra days, sunrise rule (kshaya: the day it begins)
-  for (const seg of nakSegs(2)) { const d = sunriseDays(seg)[0]; if (d && inYear(d.key)) { lists.karthigai.push({ d, seg }); addV(d, 'karthigai', { label: d.tamilMonth === 7 ? 'deepam' : null }); } }
+  // Karthigai: Krittika running at sunset (the lamp is lit in the evening; matches Karthigai Deepam dates)
+  const sunsetDay = (seg) => {
+    for (let k = E.istKey(seg.start); k <= E.istKey(seg.end); k = addDays(k, 1)) { const d = byKey[k]; if (d && d.sunset >= seg.start && d.sunset < seg.end) return d; }
+    return dayOfInstant(seg.start);
+  };
+  for (const seg of nakSegs(2)) { const d = sunsetDay(seg); if (d && inYear(d.key)) { lists.karthigai.push({ d, seg }); addV(d, 'karthigai', { label: d.tamilMonth === 7 ? 'deepam' : null }); } }
   for (const seg of nakSegs(21)) { const d = sunriseDays(seg)[0]; if (d && inYear(d.key)) { lists.thiruvonam.push({ d, seg }); addV(d, 'thiruvonam'); } }
   // Ekadasi (both pakshas), sunrise rule
   for (const i of [10, 25]) for (const seg of tithiSegs(i)) {

@@ -92,7 +92,7 @@ const C = {
   'karthigai-viratham-dates': {
     en: { title: 'Karthigai Viratham Dates {y} – Karthigai Deepam', h1: 'Karthigai viratham {y}', desc: 'All {n} monthly Karthigai (Krittika nakshatram) viratham dates of {y}, including Karthigai Deepam.', lead: 'Karthigai nakshatram comes once a month and is sacred to Murugan.' },
     ta: { title: 'கார்த்திகை விரதம் {y} – கார்த்திகை தீபம்', h1: 'கார்த்திகை விரத நாட்கள் {y}', desc: '{y} ஆண்டின் {n} மாதாந்திர கார்த்திகை நட்சத்திர விரத நாட்கள் – கார்த்திகை தீபம் உட்பட.', lead: 'மாதம் ஒருமுறை வரும் கார்த்திகை நட்சத்திரம் முருகனுக்கு உகந்தது.' },
-    method: { en: 'The day on which Karthigai nakshatram is running at sunrise in {c}.', ta: '{c} சூரிய உதயத்தில் கார்த்திகை நட்சத்திரம் இருக்கும் நாள்.' }
+    method: { en: 'The day on which Karthigai nakshatram is running at sunset in {c}, when the lamps are lit.', ta: '{c} சூரிய அஸ்தமனத்தில், தீபம் ஏற்றும் நேரத்தில், கார்த்திகை நட்சத்திரம் இருக்கும் நாள்.' }
   },
   'chaturthi-viratham-dates': {
     en: { title: 'Chathurthi Viratham Dates {y} – Vinayagar Chathurthi', h1: 'Chathurthi viratham {y}', desc: 'All {n} Valarpirai Chathurthi viratham dates of {y}, including Vinayagar Chathurthi.', lead: 'The monthly Ganesha fast on Valarpirai Chathurthi.' },

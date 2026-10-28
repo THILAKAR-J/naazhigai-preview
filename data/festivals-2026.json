@@ -1,54 +1,295 @@
 {
-  "_source": "Public holidays: Tamil Nadu Government holiday list for 2026 (24 days, incl. 1 April bank closing). Festivals: published 2026 Tamil festival calendars. Each festival with a rule is re-checked against the computed panchangam at build time.",
-  "items": [
-    {"date":"2026-01-01","en":"English New Year","ta":"ஆங்கிலப் புத்தாண்டு","holiday":"public"},
-    {"date":"2026-01-03","en":"Arudra Darshan","ta":"ஆருத்ரா தரிசனம்","rule":"nak:5@Margazhi"},
-    {"date":"2026-01-14","en":"Bhogi Pandigai","ta":"போகிப் பண்டிகை"},
-    {"date":"2026-01-15","en":"Thai Pongal","ta":"தைப் பொங்கல்","holiday":"public","rule":"tday:Thai:1"},
-    {"date":"2026-01-16","en":"Mattu Pongal","ta":"மாட்டுப் பொங்கல்"},
-    {"date":"2026-01-16","en":"Thiruvalluvar Day","ta":"திருவள்ளுவர் தினம்","holiday":"public"},
-    {"date":"2026-01-17","en":"Uzhavar Thirunal","ta":"உழவர் திருநாள்","holiday":"public"},
-    {"date":"2026-01-17","en":"Kaanum Pongal","ta":"காணும் பொங்கல்"},
-    {"date":"2026-01-18","en":"Thai Amavasai","ta":"தை அமாவாசை","rule":"tithi:29@Thai"},
-    {"date":"2026-01-25","en":"Ratha Saptami","ta":"ரத சப்தமி","rule":"tithi:6@Thai"},
-    {"date":"2026-01-26","en":"Republic Day","ta":"குடியரசு தினம்","holiday":"public"},
-    {"date":"2026-02-01","en":"Thaipusam","ta":"தைப்பூசம்","holiday":"public","rule":"nak:7@Thai"},
-    {"date":"2026-02-15","en":"Maha Shivaratri","ta":"மகா சிவராத்திரி","rule":"shivaratri@Masi"},
-    {"date":"2026-03-03","en":"Masi Magam","ta":"மாசி மகம்","rule":"nak:9@Masi"},
-    {"date":"2026-03-14","en":"Karadaiyan Nombu","ta":"காரடையான் நோன்பு"},
-    {"date":"2026-03-19","en":"Ugadi (Telugu New Year)","ta":"யுகாதி (தெலுங்கு வருடப் பிறப்பு)","holiday":"public"},
-    {"date":"2026-03-21","en":"Ramzan (Eid ul-Fitr)","ta":"ரம்ஜான்","holiday":"public"},
-    {"date":"2026-03-26","en":"Sri Rama Navami","ta":"ஸ்ரீ ராம நவமி"},
-    {"date":"2026-03-31","en":"Mahaveer Jayanthi","ta":"மகாவீர் ஜெயந்தி","holiday":"public"},
-    {"date":"2026-04-01","en":"Panguni Uthiram","ta":"பங்குனி உத்திரம்","rule":"nak:11@Panguni"},
-    {"date":"2026-04-01","en":"Annual closing of bank accounts","ta":"வங்கி ஆண்டுக் கணக்கு முடிவு","holiday":"bank"},
-    {"date":"2026-04-03","en":"Good Friday","ta":"புனித வெள்ளி","holiday":"public"},
-    {"date":"2026-04-14","en":"Tamil New Year (Puthandu)","ta":"தமிழ்ப் புத்தாண்டு","holiday":"public","rule":"tday:Chithirai:1"},
-    {"date":"2026-04-14","en":"Dr. B. R. Ambedkar Jayanthi","ta":"அம்பேத்கர் ஜெயந்தி","holiday":"public"},
-    {"date":"2026-04-19","en":"Akshaya Tritiya","ta":"அட்சய திருதியை"},
-    {"date":"2026-05-01","en":"Chithra Pournami","ta":"சித்ரா பௌர்ணமி","rule":"tithi:14@Chithirai"},
-    {"date":"2026-05-01","en":"May Day","ta":"மே தினம்","holiday":"public"},
-    {"date":"2026-05-28","en":"Bakrid","ta":"பக்ரீத்","holiday":"public"},
-    {"date":"2026-05-30","en":"Vaikasi Visakam","ta":"வைகாசி விசாகம்","rule":"nak:15@Vaigasi"},
-    {"date":"2026-06-26","en":"Muharram","ta":"மொஹரம்","holiday":"public"},
-    {"date":"2026-08-03","en":"Aadi Perukku","ta":"ஆடிப் பெருக்கு","rule":"tday:Aadi:18"},
-    {"date":"2026-08-12","en":"Aadi Amavasai","ta":"ஆடி அமாவாசை","rule":"tithi:29@Aadi"},
-    {"date":"2026-08-15","en":"Independence Day","ta":"சுதந்திர தினம்","holiday":"public"},
-    {"date":"2026-08-26","en":"Milad-un-Nabi","ta":"மிலாது நபி","holiday":"public"},
-    {"date":"2026-08-27","en":"Avani Avittam","ta":"ஆவணி அவிட்டம்"},
-    {"date":"2026-08-28","en":"Varalakshmi Vratham","ta":"வரலட்சுமி விரதம்"},
-    {"date":"2026-09-04","en":"Krishna Jayanthi","ta":"கிருஷ்ண ஜெயந்தி","holiday":"public"},
-    {"date":"2026-09-14","en":"Vinayagar Chathurthi","ta":"விநாயகர் சதுர்த்தி","holiday":"public","rule":"chaturthi@Avani"},
-    {"date":"2026-10-02","en":"Gandhi Jayanthi","ta":"காந்தி ஜெயந்தி","holiday":"public"},
-    {"date":"2026-10-10","en":"Mahalaya Amavasai","ta":"மஹாளய அமாவாசை","rule":"tithi:29@Purattasi"},
-    {"date":"2026-10-11","en":"Navarathri begins","ta":"நவராத்திரி ஆரம்பம்"},
-    {"date":"2026-10-19","en":"Ayudha Poojai / Saraswathi Poojai","ta":"ஆயுத பூஜை / சரஸ்வதி பூஜை","holiday":"public"},
-    {"date":"2026-10-20","en":"Vijayadasami","ta":"விஜயதசமி","holiday":"public"},
-    {"date":"2026-11-08","en":"Deepavali","ta":"தீபாவளி","holiday":"public"},
-    {"date":"2026-11-15","en":"Skanda Sashti (Soora Samharam)","ta":"கந்த சஷ்டி (சூரசம்ஹாரம்)","rule":"tithi:5@Aippasi"},
-    {"date":"2026-11-24","en":"Karthigai Deepam","ta":"கார்த்திகை தீபம்","rule":"nak:2@Karthigai"},
-    {"date":"2026-12-20","en":"Vaikunta Ekadasi","ta":"வைகுண்ட ஏகாதசி","rule":"tithi:10@Margazhi"},
-    {"date":"2026-12-24","en":"Arudra Darshan","ta":"ஆருத்ரா தரிசனம்","rule":"nak:5@Margazhi"},
-    {"date":"2026-12-25","en":"Christmas","ta":"கிறிஸ்துமஸ்","holiday":"public"}
-  ]
+ "_source": "Public holidays: Tamil Nadu Government holiday list for 2026 (24 days, incl. 1 April bank closing). Festivals: published 2026 Tamil festival calendars. Each festival with a rule is re-checked against the computed panchangam at build time.",
+ "govtHolidayCount": 24,
+ "items": [
+  {
+   "date": "2026-01-01",
+   "en": "English New Year",
+   "ta": "ஆங்கிலப் புத்தாண்டு",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-01-03",
+   "en": "Arudra Darshan",
+   "ta": "ஆருத்ரா தரிசனம்",
+   "rule": "nak:5@Margazhi"
+  },
+  {
+   "date": "2026-01-14",
+   "en": "Bhogi Pandigai",
+   "ta": "போகிப் பண்டிகை"
+  },
+  {
+   "date": "2026-01-15",
+   "en": "Thai Pongal",
+   "ta": "தைப் பொங்கல்",
+   "holiday": "public",
+   "rule": "tday:Thai:1"
+  },
+  {
+   "date": "2026-01-16",
+   "en": "Mattu Pongal",
+   "ta": "மாட்டுப் பொங்கல்"
+  },
+  {
+   "date": "2026-01-16",
+   "en": "Thiruvalluvar Day",
+   "ta": "திருவள்ளுவர் தினம்",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-01-17",
+   "en": "Uzhavar Thirunal",
+   "ta": "உழவர் திருநாள்",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-01-17",
+   "en": "Kaanum Pongal",
+   "ta": "காணும் பொங்கல்"
+  },
+  {
+   "date": "2026-01-18",
+   "en": "Thai Amavasai",
+   "ta": "தை அமாவாசை",
+   "rule": "tithi:29@Thai"
+  },
+  {
+   "date": "2026-01-25",
+   "en": "Ratha Saptami",
+   "ta": "ரத சப்தமி",
+   "rule": "tithi:6@Thai"
+  },
+  {
+   "date": "2026-01-26",
+   "en": "Republic Day",
+   "ta": "குடியரசு தினம்",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-02-01",
+   "en": "Thaipusam",
+   "ta": "தைப்பூசம்",
+   "holiday": "public",
+   "rule": "nak:7@Thai"
+  },
+  {
+   "date": "2026-02-15",
+   "en": "Maha Shivaratri",
+   "ta": "மகா சிவராத்திரி",
+   "rule": "shivaratri@Masi"
+  },
+  {
+   "date": "2026-03-03",
+   "en": "Masi Magam",
+   "ta": "மாசி மகம்",
+   "rule": "nak:9@Masi"
+  },
+  {
+   "date": "2026-03-14",
+   "en": "Karadaiyan Nombu",
+   "ta": "காரடையான் நோன்பு"
+  },
+  {
+   "date": "2026-03-19",
+   "en": "Ugadi (Telugu New Year)",
+   "ta": "யுகாதி (தெலுங்கு வருடப் பிறப்பு)",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-03-21",
+   "en": "Ramzan (Eid ul-Fitr)",
+   "ta": "ரம்ஜான்",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-03-26",
+   "en": "Sri Rama Navami",
+   "ta": "ஸ்ரீ ராம நவமி"
+  },
+  {
+   "date": "2026-03-31",
+   "en": "Mahaveer Jayanthi",
+   "ta": "மகாவீர் ஜெயந்தி",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-04-01",
+   "en": "Panguni Uthiram",
+   "ta": "பங்குனி உத்திரம்",
+   "rule": "nak:11@Panguni"
+  },
+  {
+   "date": "2026-04-01",
+   "en": "Annual closing of bank accounts",
+   "ta": "வங்கி ஆண்டுக் கணக்கு முடிவு",
+   "holiday": "bank"
+  },
+  {
+   "date": "2026-04-03",
+   "en": "Good Friday",
+   "ta": "புனித வெள்ளி",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-04-14",
+   "en": "Tamil New Year (Puthandu)",
+   "ta": "தமிழ்ப் புத்தாண்டு",
+   "holiday": "public",
+   "rule": "tday:Chithirai:1"
+  },
+  {
+   "date": "2026-04-14",
+   "en": "Dr. B. R. Ambedkar Jayanthi",
+   "ta": "அம்பேத்கர் ஜெயந்தி",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-04-19",
+   "en": "Akshaya Tritiya",
+   "ta": "அட்சய திருதியை"
+  },
+  {
+   "date": "2026-05-01",
+   "en": "Chithra Pournami",
+   "ta": "சித்ரா பௌர்ணமி",
+   "rule": "tithi:14@Chithirai"
+  },
+  {
+   "date": "2026-05-01",
+   "en": "May Day",
+   "ta": "மே தினம்",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-05-28",
+   "en": "Bakrid",
+   "ta": "பக்ரீத்",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-05-30",
+   "en": "Vaikasi Visakam",
+   "ta": "வைகாசி விசாகம்",
+   "rule": "nak:15@Vaigasi"
+  },
+  {
+   "date": "2026-06-26",
+   "en": "Muharram",
+   "ta": "மொஹரம்",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-08-03",
+   "en": "Aadi Perukku",
+   "ta": "ஆடிப் பெருக்கு",
+   "rule": "tday:Aadi:18"
+  },
+  {
+   "date": "2026-08-12",
+   "en": "Aadi Amavasai",
+   "ta": "ஆடி அமாவாசை",
+   "rule": "tithi:29@Aadi"
+  },
+  {
+   "date": "2026-08-15",
+   "en": "Independence Day",
+   "ta": "சுதந்திர தினம்",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-08-26",
+   "en": "Milad-un-Nabi",
+   "ta": "மிலாது நபி",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-08-27",
+   "en": "Avani Avittam",
+   "ta": "ஆவணி அவிட்டம்"
+  },
+  {
+   "date": "2026-08-28",
+   "en": "Varalakshmi Vratham",
+   "ta": "வரலட்சுமி விரதம்"
+  },
+  {
+   "date": "2026-09-04",
+   "en": "Krishna Jayanthi",
+   "ta": "கிருஷ்ண ஜெயந்தி",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-09-14",
+   "en": "Vinayagar Chathurthi",
+   "ta": "விநாயகர் சதுர்த்தி",
+   "holiday": "public",
+   "rule": "chaturthi@Avani"
+  },
+  {
+   "date": "2026-10-02",
+   "en": "Gandhi Jayanthi",
+   "ta": "காந்தி ஜெயந்தி",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-10-10",
+   "en": "Mahalaya Amavasai",
+   "ta": "மஹாளய அமாவாசை",
+   "rule": "tithi:29@Purattasi"
+  },
+  {
+   "date": "2026-10-11",
+   "en": "Navarathri begins",
+   "ta": "நவராத்திரி ஆரம்பம்"
+  },
+  {
+   "date": "2026-10-19",
+   "en": "Ayudha Poojai / Saraswathi Poojai",
+   "ta": "ஆயுத பூஜை / சரஸ்வதி பூஜை",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-10-20",
+   "en": "Vijayadasami",
+   "ta": "விஜயதசமி",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-11-08",
+   "en": "Deepavali",
+   "ta": "தீபாவளி",
+   "holiday": "public"
+  },
+  {
+   "date": "2026-11-15",
+   "en": "Skanda Sashti (Soora Samharam)",
+   "ta": "கந்த சஷ்டி (சூரசம்ஹாரம்)",
+   "rule": "tithi:5@Aippasi"
+  },
+  {
+   "date": "2026-11-24",
+   "en": "Karthigai Deepam",
+   "ta": "கார்த்திகை தீபம்",
+   "rule": "karthigai@Karthigai"
+  },
+  {
+   "date": "2026-12-20",
+   "en": "Vaikunta Ekadasi",
+   "ta": "வைகுண்ட ஏகாதசி",
+   "rule": "tithi:10@Margazhi"
+  },
+  {
+   "date": "2026-12-24",
+   "en": "Arudra Darshan",
+   "ta": "ஆருத்ரா தரிசனம்",
+   "rule": "nak:5@Margazhi"
+  },
+  {
+   "date": "2026-12-25",
+   "en": "Christmas",
+   "ta": "கிறிஸ்துமஸ்",
+   "holiday": "public"
+  }
+ ]
 }
