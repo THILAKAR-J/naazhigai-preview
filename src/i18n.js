@@ -24,7 +24,7 @@ const L = {
     noRows: 'No dates in this list.', tamilYearLbl: 'Tamil year', location: 'Location', notToday: 'Not today', isTodayLong: 'Yes, today',
     nextDate: 'Next date', prevDate: 'Previous date', todayQ: 'Today', byMonth: 'By month', count: 'Count', sankranti: 'Sankranti (sun enters)',
     footerAbout: 'Tamil calendar and panchangam, bold and clear.', calendar: 'Calendar', timings: 'Timings', dates: 'Dates', more: 'More',
-    fine: '© {y} {b} (placeholder brand name). Panchangam calculated for {c}. Timings are for general guidance; please confirm important muhurthams with your family priest.',
+    fine: '© {y} {b}. Panchangam calculated for {c}. Timings are for general guidance; please confirm important muhurthams with your family priest.',
     longWeekend: 'Long weekend', weekend: 'Falls on a weekend', ofYear: 'in {y}', tomorrowLbl: 'Tomorrow', important: 'Important tithi dates'
   },
   ta: {
@@ -50,7 +50,7 @@ const L = {
     noRows: 'இந்தப் பட்டியலில் தேதிகள் இல்லை.', tamilYearLbl: 'தமிழ் ஆண்டு', location: 'இடம்', notToday: 'இன்று இல்லை', isTodayLong: 'ஆம், இன்று',
     nextDate: 'அடுத்த தேதி', prevDate: 'முந்தைய தேதி', todayQ: 'இன்று', byMonth: 'மாத வாரியாக', count: 'எண்ணிக்கை', sankranti: 'சங்கராந்தி (சூரியன் பிரவேசம்)',
     footerAbout: 'தமிழ் காலண்டர், பஞ்சாங்கம் – தெளிவாக, எளிதாக.', calendar: 'காலண்டர்', timings: 'நேரங்கள்', dates: 'நாட்கள்', more: 'மேலும்',
-    fine: '© {y} {b} (தற்காலிகப் பெயர்). பஞ்சாங்கம் {c} நகருக்குக் கணக்கிடப்பட்டது. நேரங்கள் பொது வழிகாட்டலுக்கு மட்டும்; முக்கிய முகூர்த்தங்களை உங்கள் குடும்ப புரோகிதரிடம் உறுதிப்படுத்துங்கள்.',
+    fine: '© {y} {b}. பஞ்சாங்கம் {c} நகருக்குக் கணக்கிடப்பட்டது. நேரங்கள் பொது வழிகாட்டலுக்கு மட்டும்; முக்கிய முகூர்த்தங்களை உங்கள் குடும்ப புரோகிதரிடம் உறுதிப்படுத்துங்கள்.',
     longWeekend: 'நீண்ட வார இறுதி', weekend: 'வார இறுதியில்', ofYear: '{y}', tomorrowLbl: 'நாளை', important: 'முக்கிய திதி நாட்கள்'
   }
 };

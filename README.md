@@ -1,9 +1,9 @@
-# Naazhigai – Tamil Calendar 2026 (static site)
+# Pozhudhu (pozhudhu.in) – Tamil Calendar (static site)
 
 A complete Tamil calendar website in the "Bold Poster" design (light theme only): 1056 pages
 in English and Tamil, with 2027 versions of every list page under `/2027/`, built as plain HTML so it is fast, cheap to host and easy for Google to read.
 
-"Naazhigai" is a placeholder brand. Change it in `site.config.js`.
+Brand, domain, city and contact email live in `site.config.js`.
 
 ## Quick start
 
@@ -11,18 +11,23 @@ in English and Tamil, with 2027 versions of every list page under `/2027/`, buil
 npm install
 npm run build          # writes dist/prod (English at /, Tamil at /tamil/)
 npm run check          # broken links, leaked values, duplicate titles
+npm run audit          # SEO: canonical, hreflang, sitemap, robots, JSON-LD, titles, descriptions
+npm run check-data     # festival rules and muhurtham re-checked against the calculations
 npm run serve          # http://localhost:8080 to look at it locally
 ```
 
 Upload the **contents of `dist/prod`** to any static host: Netlify, Vercel, Cloudflare Pages,
 GitHub Pages, or plain nginx/Apache. `404.html`, `sitemap.xml` and `robots.txt` are at the root.
 
-## Before going live
+## Hosting on Cloudflare Pages (pozhudhu.in)
 
-1. In `site.config.js` set `brand`, `domain` (used in canonical URLs, hreflang and the sitemap) and `contactEmail`.
-2. Run `npm run build` again.
-3. Submit `https://your-domain/sitemap.xml` in Google Search Console.
-4. If you add analytics or ads, update the Privacy Policy text in `src/build.js` (search for `privacy-policy`).
+- Workers & Pages → Create → Pages → Connect to Git → this repo
+- Production branch `main`, build command `npm run build`, output directory `dist/prod`
+- Custom domains: `pozhudhu.in` (and `www.pozhudhu.in`, redirected to the apex)
+- `_headers` (security + asset caching) and `_redirects` (old `/amavasya/` URLs) are generated into `dist/prod`
+- Every push to `main` redeploys. The `gh-pages` branch is the noindex review copy on GitHub Pages.
+- Submit `https://pozhudhu.in/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
+- If you add analytics or ads, update the Privacy Policy text in `src/build.js` (search for `privacy-policy`).
 
 ## What is on the site
 

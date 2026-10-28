@@ -1,4 +1,4 @@
-/* Naazhigai browser script: keeps "today" correct on a static site.
+/* Pozhudhu browser script: keeps "today" correct on a static site.
    - top strip date and link, highlighted rows, today/next/previous highlight cards
    - on pages that load the year data, re-renders today's panchangam and upcoming lists */
 (function () {

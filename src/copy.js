@@ -2,8 +2,8 @@
 // Page copy: title (≤ 65 chars before the brand), h1, meta description, lead and FAQs. {y} year, {c} city.
 const C = {
   home: {
-    en: { title: 'Tamil Calendar {y} – Today’s Panchangam & Nalla Neram', h1: 'Tamil Calendar {y}: <mark>today’s panchangam</mark>', desc: 'Tamil Calendar {y} for {c}: today’s Nalla Neram, Gowri Nalla Neram, Rahu Kalam, Yamagandam, tithi, nakshatram, muhurtham dates, viratham days, festivals and holidays.', lead: 'Nalla Neram, Rahu Kalam, tithi, nakshatram and soolam for {c}. Read the day in five seconds, plan the year in five minutes.' },
-    ta: { title: 'தமிழ் காலண்டர் {y} – இன்றைய பஞ்சாங்கம், நல்ல நேரம், ராகு காலம்', h1: 'தமிழ் காலண்டர் {y}: <mark>இன்றைய பஞ்சாங்கம்</mark>', desc: '{c} நகருக்கான தமிழ் காலண்டர் {y}: இன்றைய நல்ல நேரம், கௌரி நல்ல நேரம், ராகு காலம், எமகண்டம், திதி, நட்சத்திரம், முகூர்த்த நாட்கள், விரத நாட்கள், பண்டிகைகள், விடுமுறைகள்.', lead: '{c} நகருக்கான நல்ல நேரம், ராகு காலம், திதி, நட்சத்திரம், சூலம் – ஒரே பார்வையில். ஆண்டு முழுவதையும் சில நிமிடங்களில் திட்டமிடுங்கள்.' },
+    en: { title: 'Tamil Calendar {y} – Today’s Panchangam & Nalla Neram', h1: 'Tamil Calendar {y}: <mark>today’s panchangam</mark>', desc: 'Tamil Calendar {y} for {c}: today’s Nalla Neram, Rahu Kalam, Yamagandam, tithi, nakshatram, muhurtham dates, viratham days, festivals and holidays.', lead: 'Nalla Neram, Rahu Kalam, tithi, nakshatram and soolam for {c}. Read the day in five seconds, plan the year in five minutes.' },
+    ta: { title: 'தமிழ் காலண்டர் {y} – இன்றைய பஞ்சாங்கம், நல்ல நேரம்', h1: 'தமிழ் காலண்டர் {y}: <mark>இன்றைய பஞ்சாங்கம்</mark>', desc: '{c} நகருக்கான தமிழ் காலண்டர் {y}: இன்றைய நல்ல நேரம், ராகு காலம், எமகண்டம், திதி, நட்சத்திரம், முகூர்த்த நாட்கள், விரதங்கள், பண்டிகைகள், விடுமுறைகள்.', lead: '{c} நகருக்கான நல்ல நேரம், ராகு காலம், திதி, நட்சத்திரம், சூலம் – ஒரே பார்வையில். ஆண்டு முழுவதையும் சில நிமிடங்களில் திட்டமிடுங்கள்.' },
     faq: {
       en: [['What is Rahu Kalam?', 'A daily window of one and a half hours, fixed by weekday, that is traditionally avoided for starting new work. On Tuesdays it is 3:00 PM – 4:30 PM.'], ['What is Nalla Neram?', 'Nalla Neram means “good time”: the hours of the day considered favourable for beginnings such as travel, purchases or signing papers.'], ['What is the difference between Valarpirai and Theipirai?', 'Valarpirai is the waxing fortnight, from Amavasai to Pournami. Theipirai is the waning fortnight, from Pournami to Amavasai.'], ['Which city are these timings for?', 'Sunrise, sunset, Gowri Panchangam and Nalla Neram are calculated for {c}. Rahu Kalam, Yamagandam and Kuligai follow the traditional fixed table used in Tamil calendars.']],
       ta: [['ராகு காலம் என்றால் என்ன?', 'ஒவ்வொரு கிழமைக்கும் நிர்ணயிக்கப்பட்ட ஒன்றரை மணி நேரம்; புதிய காரியங்களைத் தொடங்க தவிர்க்கப்படும் நேரம். செவ்வாய்க்கிழமை மாலை 3:00 – 4:30.'], ['நல்ல நேரம் என்றால் என்ன?', 'பயணம், பொருள் வாங்குதல், ஒப்பந்தம் போன்ற புதிய தொடக்கங்களுக்கு உகந்ததாகக் கருதப்படும் நேரம்.'], ['வளர்பிறை, தேய்பிறை – வேறுபாடு என்ன?', 'அமாவாசை முதல் பௌர்ணமி வரை வளர்பிறை; பௌர்ணமி முதல் அமாவாசை வரை தேய்பிறை.'], ['இந்த நேரங்கள் எந்த நகருக்கு?', 'சூரிய உதயம், அஸ்தமனம், கௌரி பஞ்சாங்கம், நல்ல நேரம் ஆகியவை {c} நகருக்குக் கணக்கிடப்பட்டவை. ராகு காலம், எமகண்டம், குளிகை பாரம்பரிய நிலையான அட்டவணைப்படி.']]
@@ -18,8 +18,8 @@ const C = {
     ta: { title: 'தமிழ் மாத காலண்டர் {y} – 12 மாதங்களும்', h1: 'தமிழ் மாத காலண்டர் {y}', desc: 'தமிழ் தேதி, திதி, முகூர்த்த நாட்கள், பௌர்ணமி, அமாவாசை, விரதங்கள், பண்டிகைகளுடன் {y} மாத காலண்டர்.', lead: 'ஒவ்வொரு மாதமும் தமிழ் தேதி, திதி, முகூர்த்தம், பௌர்ணமி, அமாவாசை, பண்டிகைகளுடன் ஒரே அட்டவணையில்.' }
   },
   timings: {
-    en: { title: 'Daily Timings {y} – Nalla Neram, Rahu Kalam, Yamagandam, Kuligai', h1: 'Daily timings {y}', desc: 'All daily timings for {y} in one place: Nalla Neram, Gowri Nalla Neram, Rahu Kalam, Yamagandam, Kuligai Neram and Soolam with pariharam.', lead: 'Today’s timings first, then every timing page for the year.' },
-    ta: { title: 'தினசரி நேரங்கள் {y} – நல்ல நேரம், ராகு காலம், எமகண்டம், குளிகை', h1: 'தினசரி நேரங்கள் {y}', desc: '{y} ஆண்டுக்கான அனைத்து நேரங்களும்: நல்ல நேரம், கௌரி நல்ல நேரம், ராகு காலம், எமகண்டம், குளிகை, சூலம் – பரிகாரம்.', lead: 'முதலில் இன்றைய நேரங்கள், பிறகு ஆண்டு முழுவதற்குமான பக்கங்கள்.' }
+    en: { title: 'Daily Timings {y} – Nalla Neram, Rahu Kalam, Kuligai', h1: 'Daily timings {y}', desc: 'All daily timings for {y} in one place: Nalla Neram, Gowri Nalla Neram, Rahu Kalam, Yamagandam, Kuligai Neram and Soolam with pariharam.', lead: 'Today’s timings first, then every timing page for the year.' },
+    ta: { title: 'தினசரி நேரங்கள் {y} – நல்ல நேரம், ராகு காலம், குளிகை', h1: 'தினசரி நேரங்கள் {y}', desc: '{y} ஆண்டுக்கான அனைத்து நேரங்களும்: நல்ல நேரம், கௌரி நல்ல நேரம், ராகு காலம், எமகண்டம், குளிகை, சூலம் – பரிகாரம்.', lead: 'முதலில் இன்றைய நேரங்கள், பிறகு ஆண்டு முழுவதற்குமான பக்கங்கள்.' }
   },
   'nalla-neram': {
     en: { title: 'Nalla Neram {y} – Today’s Good Time, Day by Day', h1: 'Nalla Neram {y}', desc: 'Nalla Neram (good time) for every day of {y} in {c}: auspicious Gowri windows with Rahu Kalam and Yamagandam taken out. Today, tomorrow and the full year.', lead: 'The good hours of each day from sunrise to 10 PM, with Rahu Kalam and Yamagandam already removed.' },
@@ -100,7 +100,7 @@ const C = {
     method: { en: 'The day on which Valarpirai Chathurthi covers the middle of the day (madhyahnam) in {c}.', ta: '{c} மதியப் பொழுதில் (மத்யாஹ்னம்) வளர்பிறை சதுர்த்தி இருக்கும் நாள்.' }
   },
   'shivaratri-dates': {
-    en: { title: 'Shivaratri Dates {y} – Maha Shivaratri & Masa Shivaratri', h1: 'Shivaratri {y}', desc: 'All {n} Masa Shivaratri dates of {y} with nishita (midnight) time for {c}, including Maha Shivaratri.', lead: 'Masa Shivaratri falls on Theipirai Chaturdashi every month. The one in Masi is Maha Shivaratri.' },
+    en: { title: 'Shivaratri Dates {y} – Maha & Masa Shivaratri', h1: 'Shivaratri {y}', desc: 'All {n} Masa Shivaratri dates of {y} with nishita (midnight) time for {c}, including Maha Shivaratri.', lead: 'Masa Shivaratri falls on Theipirai Chaturdashi every month. The one in Masi is Maha Shivaratri.' },
     ta: { title: 'சிவராத்திரி {y} – மகா சிவராத்திரி, மாத சிவராத்திரி', h1: 'சிவராத்திரி நாட்கள் {y}', desc: '{y} ஆண்டின் {n} மாத சிவராத்திரி நாட்களும் {c} நிசி நேரத்துடன்; மகா சிவராத்திரி உட்பட.', lead: 'ஒவ்வொரு மாதமும் தேய்பிறை சதுர்த்தசியில் மாத சிவராத்திரி. மாசியில் வருவது மகா சிவராத்திரி.' },
     method: { en: 'The night on which Theipirai Chaturdashi is running at nishita, the midpoint between sunset and the next sunrise in {c}.', ta: '{c} சூரிய அஸ்தமனத்துக்கும் மறுநாள் உதயத்துக்கும் நடுவான நிசி நேரத்தில் தேய்பிறை சதுர்த்தசி இருக்கும் இரவு.' }
   },
@@ -132,12 +132,12 @@ const C = {
     ta: { title: 'அஷ்டமி, நவமி நாட்கள் {y}', h1: 'அஷ்டமி & நவமி {y}', desc: '{y} ஆண்டின் அனைத்து அஷ்டமி, நவமி நாட்களும் – புதிய தொடக்கங்களுக்குப் பலர் தவிர்க்கும் நாட்கள்.', lead: 'அஷ்டமி, நவமி நாட்களில் புதிய காரியங்களைப் பலர் தொடங்குவதில்லை.' }
   },
   'ashtami-navami-dashami': {
-    en: { title: 'Ashtami, Navami & Dasami Dates {y}', h1: 'Ashtami, Navami & Dasami {y}', desc: 'All Ashtami, Navami and Dasami dates of {y} in one list.', lead: 'Ashtami, Navami and Dasami of {y} together, for quick planning.' },
-    ta: { title: 'அஷ்டமி, நவமி, தசமி நாட்கள் {y}', h1: 'அஷ்டமி, நவமி & தசமி {y}', desc: '{y} ஆண்டின் அனைத்து அஷ்டமி, நவமி, தசமி நாட்களும் ஒரே பட்டியலில்.', lead: 'விரைவான திட்டமிடலுக்கு {y} அஷ்டமி, நவமி, தசமி ஒன்றாக.' }
+    en: { title: 'Ashtami, Navami & Dasami Dates {y}', h1: 'Ashtami, Navami & Dasami {y}', desc: 'All Ashtami, Navami and Dasami dates of {y} in one list, with Tamil date, pirai and the time each tithi ends in {c}.', lead: 'Ashtami, Navami and Dasami of {y} together, for quick planning.' },
+    ta: { title: 'அஷ்டமி, நவமி, தசமி நாட்கள் {y}', h1: 'அஷ்டமி, நவமி & தசமி {y}', desc: '{y} ஆண்டின் அனைத்து அஷ்டமி, நவமி, தசமி நாட்களும் ஒரே பட்டியலில் – தமிழ் தேதி, பிறை, திதி முடியும் நேரத்துடன்.', lead: 'விரைவான திட்டமிடலுக்கு {y} அஷ்டமி, நவமி, தசமி ஒன்றாக.' }
   },
   'valarpirai-ashtami': {
-    en: { title: 'Valarpirai Ashtami Dates {y}', h1: 'Valarpirai Ashtami {y}', desc: 'All Valarpirai (waxing) Ashtami dates of {y} with Tamil date.', lead: 'Ashtami in the waxing fortnight.' },
-    ta: { title: 'வளர்பிறை அஷ்டமி {y}', h1: 'வளர்பிறை அஷ்டமி {y}', desc: '{y} ஆண்டின் அனைத்து வளர்பிறை அஷ்டமி நாட்களும் தமிழ் தேதியுடன்.', lead: 'வளர்பிறையில் வரும் அஷ்டமி.' }
+    en: { title: 'Valarpirai Ashtami Dates {y}', h1: 'Valarpirai Ashtami {y}', desc: 'All Valarpirai (waxing moon) Ashtami dates of {y} with Tamil date and the time the tithi ends in {c}.', lead: 'Ashtami in the waxing fortnight.' },
+    ta: { title: 'வளர்பிறை அஷ்டமி {y}', h1: 'வளர்பிறை அஷ்டமி {y}', desc: '{y} ஆண்டின் அனைத்து வளர்பிறை அஷ்டமி நாட்களும் – தமிழ் தேதி, திதி முடியும் நேரத்துடன் ({c}).', lead: 'வளர்பிறையில் வரும் அஷ்டமி.' }
   },
   'theipirai-ashtami': {
     en: { title: 'Theipirai Ashtami Dates {y} – Kalabhairava Ashtami', h1: 'Theipirai Ashtami {y}', desc: 'All Theipirai (waning) Ashtami dates of {y}, observed for Kalabhairavar.', lead: 'Ashtami in the waning fortnight, the day for Kalabhairavar worship.' },
@@ -170,14 +170,14 @@ const C = {
     ta: { title: 'வக்ர கிரகங்கள் {y}', h1: 'வக்ர கிரகங்கள் {y}', desc: '{y} ஆண்டில் புதன், சுக்கிரன், செவ்வாய், குரு, சனி, யுரேனஸ், நெப்டியூன், புளூட்டோ வக்ர காலங்கள் – இந்திய நேரப்படி தொடக்கம், முடிவு.', lead: '{y}-இல் ஒவ்வொரு கிரகமும் பின்னோக்கிச் செல்வது போல் தோன்றும் காலம். ராகு, கேது எப்போதும் வக்ரம்.' }
   },
   'site-map': {
-    en: { title: 'Site Map', h1: 'Site map', desc: 'Every page of the {b} Tamil calendar {y}.', lead: 'Every page on the site.' },
-    ta: { title: 'தள வரைபடம்', h1: 'தள வரைபடம்', desc: '{b} தமிழ் காலண்டர் {y} – அனைத்துப் பக்கங்களும்.', lead: 'தளத்தின் அனைத்துப் பக்கங்களும்.' }
+    en: { title: 'Site Map', h1: 'Site map', desc: 'Every page of the {b} Tamil calendar {y}: daily and monthly calendars, timings, muhurtham, viratham, tithi, festivals and holidays.', lead: 'Every page on the site.' },
+    ta: { title: 'தள வரைபடம்', h1: 'தள வரைபடம்', desc: '{b} தமிழ் காலண்டர் {y} – தினசரி, மாத காலண்டர், நேரங்கள், முகூர்த்தம், விரதம், திதி, பண்டிகைகள், விடுமுறைகள் – அனைத்துப் பக்கங்களும்.', lead: 'தளத்தின் அனைத்துப் பக்கங்களும்.' }
   },
-  about: { en: { title: 'About', h1: 'About {b}', desc: 'About {b}, a Tamil calendar and panchangam for {c}.', lead: '' }, ta: { title: 'எங்களைப் பற்றி', h1: '{b} பற்றி', desc: '{c} நகருக்கான தமிழ் காலண்டர், பஞ்சாங்கம் – {b} பற்றி.', lead: '' } },
-  disclaimer: { en: { title: 'Disclaimer', h1: 'Disclaimer', desc: 'Disclaimer for the {b} Tamil calendar.', lead: '' }, ta: { title: 'பொறுப்புத் துறப்பு', h1: 'பொறுப்புத் துறப்பு', desc: '{b} தமிழ் காலண்டர் – பொறுப்புத் துறப்பு.', lead: '' } },
-  'privacy-policy': { en: { title: 'Privacy Policy', h1: 'Privacy policy', desc: 'Privacy policy of {b}.', lead: '' }, ta: { title: 'தனியுரிமைக் கொள்கை', h1: 'தனியுரிமைக் கொள்கை', desc: '{b} தனியுரிமைக் கொள்கை.', lead: '' } },
-  'terms-of-use': { en: { title: 'Terms of Use', h1: 'Terms of use', desc: 'Terms of use of {b}.', lead: '' }, ta: { title: 'பயன்பாட்டு விதிமுறைகள்', h1: 'பயன்பாட்டு விதிமுறைகள்', desc: '{b} பயன்பாட்டு விதிமுறைகள்.', lead: '' } },
-  'contact-us': { en: { title: 'Contact Us', h1: 'Contact us', desc: 'Contact {b} with corrections and feedback.', lead: '' }, ta: { title: 'தொடர்பு கொள்ள', h1: 'தொடர்பு கொள்ள', desc: 'திருத்தங்கள், கருத்துகளுக்கு {b} உடன் தொடர்பு கொள்ளுங்கள்.', lead: '' } },
+  about: { en: { title: 'About', h1: 'About {b}', desc: 'About {b}, a Tamil calendar and panchangam for {c}: how tithi, nakshatram, Nalla Neram and muhurtham dates are worked out.', lead: '' }, ta: { title: 'எங்களைப் பற்றி', h1: '{b} பற்றி', desc: '{c} நகருக்கான தமிழ் காலண்டர், பஞ்சாங்கம் – {b} பற்றி: திதி, நட்சத்திரம், நல்ல நேரம், முகூர்த்தம் எப்படி கணக்கிடப்படுகின்றன.', lead: '' } },
+  disclaimer: { en: { title: 'Disclaimer', h1: 'Disclaimer', desc: 'Disclaimer for the {b} Tamil calendar: timings are for general guidance; confirm wedding and griha pravesam muhurthams with your priest.', lead: '' }, ta: { title: 'பொறுப்புத் துறப்பு', h1: 'பொறுப்புத் துறப்பு', desc: '{b} தமிழ் காலண்டர் – பொறுப்புத் துறப்பு: நேரங்கள் பொது வழிகாட்டலுக்கு மட்டும்; முக்கிய முகூர்த்தங்களைப் புரோகிதரிடம் உறுதி செய்யுங்கள்.', lead: '' } },
+  'privacy-policy': { en: { title: 'Privacy Policy', h1: 'Privacy policy', desc: 'Privacy policy of {b}: no account, no personal details collected; only Google Fonts is loaded from outside the site.', lead: '' }, ta: { title: 'தனியுரிமைக் கொள்கை', h1: 'தனியுரிமைக் கொள்கை', desc: '{b} தனியுரிமைக் கொள்கை: கணக்கு தேவையில்லை, தனிப்பட்ட விவரங்கள் சேகரிக்கப்படுவதில்லை.', lead: '' } },
+  'terms-of-use': { en: { title: 'Terms of Use', h1: 'Terms of use', desc: 'Terms of use of {b}: read, print and share pages for personal use, and link back instead of copying whole tables.', lead: '' }, ta: { title: 'பயன்பாட்டு விதிமுறைகள்', h1: 'பயன்பாட்டு விதிமுறைகள்', desc: '{b} பயன்பாட்டு விதிமுறைகள்: தனிப்பட்ட பயன்பாட்டுக்குப் படிக்கலாம், அச்சிடலாம், பகிரலாம்; அட்டவணைகளை நகலெடுக்காமல் இணைப்பு தாருங்கள்.', lead: '' } },
+  'contact-us': { en: { title: 'Contact Us', h1: 'Contact us', desc: 'Contact {b} with corrections, suggestions and feedback on the Tamil calendar, panchangam timings and muhurtham dates.', lead: '' }, ta: { title: 'தொடர்பு கொள்ள', h1: 'தொடர்பு கொள்ள', desc: 'தமிழ் காலண்டர், பஞ்சாங்க நேரங்கள், முகூர்த்த நாட்கள் குறித்த திருத்தங்கள், கருத்துகளுக்கு {b} உடன் தொடர்பு கொள்ளுங்கள்.', lead: '' } },
   '404': { en: { title: 'Page Not Found', h1: 'This page is not on the calendar', desc: 'The page you asked for does not exist.', lead: 'The link may be old. Try today’s panchangam or the site map.' }, ta: { title: 'பக்கம் கிடைக்கவில்லை', h1: 'இந்தப் பக்கம் இல்லை', desc: 'நீங்கள் தேடிய பக்கம் இல்லை.', lead: 'இணைப்பு பழையதாக இருக்கலாம். இன்றைய பஞ்சாங்கம் அல்லது தள வரைபடத்தைப் பாருங்கள்.' } }
 };
 

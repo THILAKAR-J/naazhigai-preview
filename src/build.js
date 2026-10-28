@@ -21,7 +21,7 @@ const LANGS = PREVIEW ? [TARGET.split('-')[1]] : ['en', 'ta'];
 const TODAY = arg('today', F.istKey(new Date()));
 const OTHER = arg('other', '');
 const DEV = process.argv.includes('--dev');            // review build: noindex everywhere
-const BASE = arg('base', '').replace(/\/$/, '');      // e.g. /naazhigai-dev when hosted under a sub-path
+const BASE = arg('base', '').replace(/\/$/, '');      // e.g. /naazhigai-preview when hosted under a sub-path
 const OUT = path.join(ROOT, 'dist', DEV ? 'dev' : TARGET);
 const PRIMARY = cfg.year;                                   // daily + monthly pages exist for this year only
 const YEARS = [PRIMARY].concat(PREVIEW ? [] : (cfg.extraYears || []));
@@ -219,7 +219,10 @@ function shell(lang, r, o) {
   const crumbs = [[Lx.home, { p: 'home' }]].concat(o.crumbs || []);
   const crumbHtml = r.p === 'home' ? '' : '<nav class="crumbs" aria-label="Breadcrumb"><ol>' + crumbs.map((c, i) => '<li>' + (i < crumbs.length - 1 ? '<a href="' + href(lang, c[1]) + '">' + esc(c[0]) + '</a>' : '<span aria-current="page">' + esc(c[0]) + '</span>') + '</li>').join('') + '</ol></nav>';
   const ld = [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c[0], item: abs(lang, c[1]) })) }];
-  if (r.p === 'home') ld.push({ '@context': 'https://schema.org', '@type': 'WebSite', name: cfg.brand[lang], url: abs(lang, { p: 'home' }), inLanguage: lang });
+  if (r.p === 'home') {
+    ld.push({ '@context': 'https://schema.org', '@type': 'WebSite', name: cfg.brand[lang], alternateName: lang === 'en' ? cfg.brand.ta : cfg.brand.en, url: abs(lang, { p: 'home' }), inLanguage: lang });
+    ld.push({ '@context': 'https://schema.org', '@type': 'Organization', name: cfg.brand.en, alternateName: cfg.brand.ta, url: cfg.domain + '/', logo: cfg.domain + '/assets/icon-512.png', email: cfg.contactEmail });
+  }
   if (o.faq && o.faq.length) ld.push({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: o.faq.map(([q, a]) => ({ '@type': 'Question', name: T(lang, q, o.vars), acceptedAnswer: { '@type': 'Answer', text: T(lang, a, o.vars) } })) });
   const is404 = r.p === 'page' && r.s === '404';
   const otherHref = PREVIEW ? OTHER : prodHref(other, is404 ? { p: 'home' } : r);
@@ -235,8 +238,8 @@ function shell(lang, r, o) {
     '<title>' + esc(title) + '</title><meta name="claude:viewport-fit-sides" content="cover">' +
     '<meta name="description" content="' + esc(desc) + '">' + ((o.noindex || DEV) ? '<meta name="robots" content="noindex,nofollow">' : '') +
     (o.noindex ? '' : '<link rel="canonical" href="' + canon + '">' + hreflang) +
-    '<meta property="og:type" content="website"><meta property="og:site_name" content="' + esc(cfg.brand[lang]) + '"><meta property="og:title" content="' + esc(title) + '"><meta property="og:description" content="' + esc(desc) + '"><meta property="og:url" content="' + canon + '"><meta property="og:locale" content="' + (lang === 'en' ? 'en_IN' : 'ta_IN') + '"><meta name="twitter:card" content="summary">' +
-    '<meta name="color-scheme" content="only light"><meta name="theme-color" content="#FFC21A"><link rel="icon" href="' + asset('favicon.svg') + '" type="image/svg+xml">' +
+    '<meta property="og:type" content="website"><meta property="og:site_name" content="' + esc(cfg.brand[lang]) + '"><meta property="og:title" content="' + esc(title) + '"><meta property="og:description" content="' + esc(desc) + '"><meta property="og:url" content="' + canon + '"><meta property="og:locale" content="' + (lang === 'en' ? 'en_IN' : 'ta_IN') + '"><meta property="og:image" content="' + cfg.domain + '/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="' + esc(cfg.brand.en + ' · ' + cfg.brand.ta + ' – Tamil calendar') + '"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="' + cfg.domain + '/assets/og.jpg">' +
+    '<meta name="color-scheme" content="only light"><meta name="theme-color" content="#FFC21A"><link rel="icon" href="' + asset('favicon.svg') + '" type="image/svg+xml"><link rel="apple-touch-icon" href="' + asset('apple-touch-icon.png') + '"><link rel="manifest" href="' + asset('site.webmanifest') + '">' +
     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Hind+Madurai:wght@400;600;700&display=swap">' +
     '<link rel="stylesheet" href="' + asset('site.css') + '">' +
@@ -311,9 +314,12 @@ function buildDaily(lang) {
       sec('mo', esc(T(lang, Lx.allMonths)), '', monthChips(lang, p.m));
     const ti = N.TITHI[d.tithi][lang], nk = N.NAK[d.nak][lang], td = tdShort(d, lang);
     const title = lang === 'en' ? F.fmtD(d.key, 'en', 'med') + ' Tamil Calendar: ' + td + ', ' + ti : dl + ' தமிழ் காலண்டர்: ' + td + ', ' + ti;
+    const fe = d.festivals.map((f) => f[lang]).join(', ');
     const desc = lang === 'en'
-      ? dl + ' (' + td + ', ' + yearName(d).en + '): ' + ti + ' tithi, ' + nk + ' nakshatram, Nalla Neram ' + (r0.nla[0] || '–') + ', Rahu Kalam ' + r0.rh + ' – ' + cfg.location.name.en + '.' + (d.festivals.length ? ' ' + d.festivals.map((f) => f.en).join(', ') + '.' : '')
-      : dl + ' (' + td + ', ' + yearName(d).ta + '): திதி ' + ti + ', நட்சத்திரம் ' + nk + ', நல்ல நேரம் ' + (r0.nla[0] || '–') + ', ராகு காலம் ' + r0.rh + ' – ' + cfg.location.name.ta + '.' + (d.festivals.length ? ' ' + d.festivals.map((f) => f.ta).join(', ') + '.' : '');
+      ? (fe ? dl + ': ' + fe + '. ' + td + ', ' + ti + ' tithi, ' + nk + ' nakshatram, Nalla Neram ' + (r0.nla[0] || '–') + '.'
+            : dl + ' (' + td + ', ' + yearName(d).en + '): ' + ti + ' tithi, ' + nk + ' nakshatram, Nalla Neram ' + (r0.nla[0] || '–') + ', Rahu Kalam ' + r0.rh + ' – ' + cfg.location.name.en + '.')
+      : (fe ? dl + ': ' + fe + '. ' + td + ', திதி ' + ti + ', நட்சத்திரம் ' + nk + ', நல்ல நேரம் ' + (r0.nla[0] || '–') + '.'
+            : dl + ' (' + td + ', ' + yearName(d).ta + '): திதி ' + ti + ', நட்சத்திரம் ' + nk + ', நல்ல நேரம் ' + (r0.nla[0] || '–') + ', ராகு காலம் ' + r0.rh + ' – ' + cfg.location.name.ta + '.');
     const h1 = lang === 'en' ? esc(dl) + ' <mark>Tamil daily calendar</mark>' : esc(dl) + ' <mark>தமிழ் தினசரி காலண்டர்</mark>';
     emit(lang, day(d.key), { title, desc, h1, lead: '', body, navCur: 'tamil-daily-calendar', crumbs: [[Lx.dailyCal, pg('tamil-daily-calendar')], [dl, day(d.key)]] });
   });
@@ -424,7 +430,7 @@ function buildTimings(lang) {
       const mbody = methodBox(lang, C[slug].method[lang]) + sec('list', esc(name + ' · ' + mn), '', monthTable(m, 'yt')) +
         '<div class="pager">' + (m > 1 ? '<a href="' + href(lang, sub(slug, m - 1)) + '" rel="prev">‹ ' + esc(N.GMONTH[m - 2][lang]) + '</a>' : '<span></span>') + '<a href="' + href(lang, pg(slug)) + '">' + esc(base) + '</a>' + (m < 12 ? '<a href="' + href(lang, sub(slug, m + 1)) + '" rel="next">' + esc(N.GMONTH[m][lang]) + ' ›</a>' : '<span></span>') + '</div>' +
         sec('bm', esc(Lx.byMonth), '', subChips(m));
-      const title = lang === 'en' ? name + ' ' + mn + ' – Daily Timings for ' + cfg.location.name.en : name + ' ' + mn + ' – தினசரி நேரங்கள்';
+      const title = lang === 'en' ? name + ' ' + mn + ' – Daily Timings, ' + cfg.location.name.en : name + ' ' + mn + ' – தினசரி நேரங்கள்';
       const desc = lang === 'en' ? name + ' for every day of ' + mn + ' in ' + cfg.location.name.en + ', with Tamil date and tithi. Calculated from local sunrise and sunset.' : mn + ' மாதத்தின் ஒவ்வொரு நாளுக்குமான ' + name + ' – ' + cfg.location.name.ta + ', தமிழ் தேதி, திதியுடன். உள்ளூர் சூரிய உதயம், அஸ்தமனப்படி.';
       emit(lang, sub(slug, m), { title, desc, h1: esc(name) + ' <mark>' + esc(mn) + '</mark>', lead: T(lang, c.lead), body: mbody, navCur: slug === 'nalla-neram' ? 'nalla-neram' : 'timings', crumbs: [[base, pg(slug)], [mn, sub(slug, m)]], years: YEARS.map((y) => [y, { p: 'sub', s: slug, m, y }]) });
     }
@@ -630,7 +636,7 @@ function buildSiteInfo(lang) {
     'ஏதேனும் தவறு தெரிந்தால் <a href="' + href(lang, pg('contact-us')) + '">தொடர்புப் பக்கம்</a> வழியாக எழுதுங்கள்.'
   ]));
   stdPage(lang, 'disclaimer', P(en ? ['The panchangam, timings and dates on this site are calculated with care and are for general guidance only. Different panchangams (Vakya and Thirukanitha) can differ by a few hours, which sometimes changes the tithi or nakshatram shown for a date.', 'For weddings, griha pravesam and other important events, please confirm the muhurtham and lagnam with your family priest or astrologer. ' + esc(cfg.brand.en) + ' is not responsible for decisions taken from this information.'] : ['இந்தத் தளத்திலுள்ள பஞ்சாங்கம், நேரங்கள், தேதிகள் கவனத்துடன் கணக்கிடப்பட்டவை; பொது வழிகாட்டலுக்கு மட்டுமே. வாக்கிய, திருக்கணித பஞ்சாங்கங்களுக்கு இடையே சில மணி நேர வேறுபாடு இருக்கலாம்; அதனால் ஒரு தேதிக்கான திதி அல்லது நட்சத்திரம் மாறலாம்.', 'திருமணம், கிரகப்பிரவேசம் போன்ற முக்கிய நிகழ்வுகளுக்கு முகூர்த்தம், லக்னத்தை உங்கள் குடும்ப புரோகிதர் அல்லது ஜோதிடரிடம் உறுதி செய்யுங்கள். இந்தத் தகவல்களின் அடிப்படையில் எடுக்கப்படும் முடிவுகளுக்கு ' + esc(cfg.brand.ta) + ' பொறுப்பல்ல.']));
-  stdPage(lang, 'privacy-policy', P(en ? ['This site does not ask for an account and does not collect personal details. Pages are plain HTML; the only external service is Google Fonts, which your browser contacts to load the typefaces.', 'If you write to us, we use your email only to reply.', '<strong>Note for the site owner:</strong> if you add analytics or advertising, update this page to say what is collected and why.'] : ['இந்தத் தளம் கணக்கு கேட்பதில்லை; தனிப்பட்ட விவரங்களைச் சேகரிப்பதில்லை. பக்கங்கள் எளிய HTML; எழுத்துருக்களுக்காக உங்கள் உலாவி Google Fonts-ஐ மட்டும் தொடர்பு கொள்ளும்.', 'நீங்கள் எழுதினால், உங்கள் மின்னஞ்சலைப் பதில் அனுப்ப மட்டுமே பயன்படுத்துவோம்.', '<strong>தள உரிமையாளருக்கு:</strong> அனலிட்டிக்ஸ் அல்லது விளம்பரம் சேர்த்தால், என்ன சேகரிக்கப்படுகிறது, ஏன் என்பதை இந்தப் பக்கத்தில் புதுப்பியுங்கள்.']));
+  stdPage(lang, 'privacy-policy', P(en ? ['This site does not ask for an account and does not collect personal details. Pages are plain HTML; the only external service is Google Fonts, which your browser contacts to load the typefaces.', 'If you write to us, we use your email only to reply.'] : ['இந்தத் தளம் கணக்கு கேட்பதில்லை; தனிப்பட்ட விவரங்களைச் சேகரிப்பதில்லை. பக்கங்கள் எளிய HTML; எழுத்துருக்களுக்காக உங்கள் உலாவி Google Fonts-ஐ மட்டும் தொடர்பு கொள்ளும்.', 'நீங்கள் எழுதினால், உங்கள் மின்னஞ்சலைப் பதில் அனுப்ப மட்டுமே பயன்படுத்துவோம்.']));
   stdPage(lang, 'terms-of-use', P(en ? ['You may read, print and share pages from this site for personal use. Please link back instead of copying whole tables onto another website.', 'The information is provided as is, without warranty. See the <a href="' + href(lang, pg('disclaimer')) + '">disclaimer</a>.'] : ['தனிப்பட்ட பயன்பாட்டுக்காக இந்தத் தளப் பக்கங்களைப் படிக்கலாம், அச்சிடலாம், பகிரலாம். முழு அட்டவணைகளை வேறு தளத்தில் நகலெடுப்பதற்குப் பதிலாக இணைப்பு தாருங்கள்.', 'தகவல்கள் உள்ளபடியே, உத்தரவாதமின்றி வழங்கப்படுகின்றன. <a href="' + href(lang, pg('disclaimer')) + '">பொறுப்புத் துறப்பைப்</a> பாருங்கள்.']));
   stdPage(lang, 'contact-us', P(en ? ['For corrections, suggestions or questions, email us at:', '<strong style="font-size:22px;user-select:all">' + esc(cfg.contactEmail) + '</strong>', 'Please include the page link and the date you are asking about.'] : ['திருத்தங்கள், பரிந்துரைகள், கேள்விகளுக்கு மின்னஞ்சல்:', '<strong style="font-size:22px;user-select:all">' + esc(cfg.contactEmail) + '</strong>', 'பக்க இணைப்பையும், நீங்கள் கேட்கும் தேதியையும் சேர்த்து எழுதுங்கள்.']));
   // 404
@@ -658,7 +664,8 @@ const assetDir = PREVIEW ? OUT : path.join(OUT, 'assets');
 fs.mkdirSync(assetDir, { recursive: true });
 fs.copyFileSync(path.join(ROOT, 'assets/site.css'), path.join(assetDir, 'site.css'));
 fs.copyFileSync(path.join(ROOT, 'assets/site.js'), path.join(assetDir, 'site.js'));
-fs.copyFileSync(path.join(ROOT, 'assets/favicon.svg'), path.join(assetDir, 'favicon.svg'));
+for (const f of ['favicon.svg', 'og.jpg', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png']) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(assetDir, f));
+fs.writeFileSync(path.join(assetDir, 'site.webmanifest'), JSON.stringify({ name: cfg.brand.en + ' – Tamil Calendar', short_name: cfg.brand.en, lang: 'en', start_url: BASE + '/', display: 'standalone', background_color: '#FFFDF5', theme_color: '#FFC21A', icons: [{ src: BASE + '/assets/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: BASE + '/assets/icon-512.png', sizes: '512x512', type: 'image/png' }] }, null, 2) + '\n');
 fs.copyFileSync(path.join(__dirname, 'shared.js'), path.join(assetDir, 'shared.js'));
 for (const lang of LANGS) {
   const Lx = L[lang];
@@ -677,5 +684,12 @@ if (!PREVIEW) {
   fs.writeFileSync(path.join(OUT, 'sitemap.xml'), xml);
   fs.writeFileSync(path.join(OUT, 'robots.txt'), DEV ? 'User-agent: *\nDisallow: /\n' : 'User-agent: *\nAllow: /\n\nSitemap: ' + cfg.domain + '/sitemap.xml\n');
   if (DEV) fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
+  // Cloudflare Pages: cache + security headers, and old URL redirects
+  fs.writeFileSync(path.join(OUT, '_headers'), [
+    '/*', '  X-Content-Type-Options: nosniff', '  Referrer-Policy: strict-origin-when-cross-origin', '  X-Frame-Options: SAMEORIGIN', '  Permissions-Policy: camera=(), microphone=(), geolocation=()',
+    '', '/assets/*', '  Cache-Control: public, max-age=86400, stale-while-revalidate=604800', ''].join('\n'));
+  fs.writeFileSync(path.join(OUT, '_redirects'), [
+    BASE + '/amavasya/ ' + BASE + '/amavasai/ 301', BASE + '/tamil/amavasya/ ' + BASE + '/tamil/amavasai/ 301',
+    BASE + '/2027/amavasya/ ' + BASE + '/2027/amavasai/ 301', BASE + '/tamil/2027/amavasya/ ' + BASE + '/tamil/2027/amavasai/ 301', ''].join('\n'));
 }
 console.log('Built ' + pages.length + ' pages for ' + TARGET + ' (static today = ' + BUILD_KEY + ') into ' + path.relative(ROOT, OUT));
