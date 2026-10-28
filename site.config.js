@@ -2,7 +2,7 @@
 // Edit this file to rebrand, change the domain, or move the calculations to another city.
 module.exports = {
   brand: { en: 'Pozhudhu', ta: 'பொழுது' },
-  domain: 'https://pozhudhu.in',                       // used for canonical URLs, sitemap and Open Graph (no trailing slash)
+  domain: 'https://pozhudhu.com',                       // used for canonical URLs, sitemap and Open Graph (no trailing slash)
   year: 2026,
   location: { name: { en: 'Chennai', ta: 'சென்னை' }, lat: 13.0827, lon: 80.2707, elev: 6 },
   // Extra years published under /<year>/ for list pages (timings, muhurtham, viratham, tithi, festivals, holidays)
@@ -19,5 +19,5 @@ module.exports = {
     '9:2026': '2026-01-15', '4:2026': '2026-08-18', '5:2026': '2026-09-18',
     '4:2027': '2027-08-18', '5:2027': '2027-09-18', '8:2027': '2027-12-17'
   },
-  contactEmail: 'contact@pozhudhu.in'                  // set up with Cloudflare Email Routing
+  contactEmail: 'contact@pozhudhu.com'                  // set up with Cloudflare Email Routing
 };

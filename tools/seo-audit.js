@@ -39,7 +39,7 @@ for (const f of html) {
   if (descs.has(desc)) err.push('duplicate description ' + u); else descs.set(desc, u);
   if (title.length > 70) warn.push('title ' + title.length + ' chars ' + u);
   if (desc.length > 170 || desc.length < 70) warn.push('description ' + desc.length + ' chars ' + u);
-  if (/naazhigai|நாழிகை|example\.com|placeholder|localhost|github\.io|lorem/i.test(s)) err.push('leftover text ' + u + ' ' + s.match(/naazhigai|நாழிகை|example\.com|placeholder|localhost|github\.io|lorem/i)[0]);
+  if (/naazhigai|நாழிகை|example\.com|placeholder|localhost|github\.io|lorem|pozhudhu\.in\b/i.test(s)) err.push('leftover text ' + u + ' ' + s.match(/naazhigai|நாழிகை|example\.com|placeholder|localhost|github\.io|lorem|pozhudhu\.in\b/i)[0]);
 }
 // sitemap
 const sm = fs.readFileSync(path.join(dir, 'sitemap.xml'), 'utf8');

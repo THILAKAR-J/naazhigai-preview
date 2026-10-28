@@ -1,4 +1,4 @@
-# Pozhudhu (pozhudhu.in) – Tamil Calendar (static site)
+# Pozhudhu (pozhudhu.com) – Tamil Calendar (static site)
 
 A complete Tamil calendar website in the "Bold Poster" design (light theme only): 1056 pages
 in English and Tamil, with 2027 versions of every list page under `/2027/`, built as plain HTML so it is fast, cheap to host and easy for Google to read.
@@ -19,14 +19,14 @@ npm run serve          # http://localhost:8080 to look at it locally
 Upload the **contents of `dist/prod`** to any static host: Netlify, Vercel, Cloudflare Pages,
 GitHub Pages, or plain nginx/Apache. `404.html`, `sitemap.xml` and `robots.txt` are at the root.
 
-## Hosting on Cloudflare Pages (pozhudhu.in)
+## Hosting on Cloudflare Pages (pozhudhu.com)
 
 - Workers & Pages → Create → Pages → Connect to Git → this repo
 - Production branch `main`, build command `npm run build`, output directory `dist/prod`
-- Custom domains: `pozhudhu.in` (and `www.pozhudhu.in`, redirected to the apex)
+- Custom domains: `pozhudhu.com` (and `www.pozhudhu.com`, redirected to the apex)
 - `_headers` (security + asset caching) and `_redirects` (old `/amavasya/` URLs) are generated into `dist/prod`
 - Every push to `main` redeploys. The `gh-pages` branch is the noindex review copy on GitHub Pages.
-- Submit `https://pozhudhu.in/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
+- Submit `https://pozhudhu.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 - If you add analytics or ads, update the Privacy Policy text in `src/build.js` (search for `privacy-policy`).
 
 ## What is on the site
@@ -97,7 +97,7 @@ src/names.js        English + Tamil names, fixed timing tables
 src/i18n.js, src/copy.js   labels, titles, meta descriptions, FAQs (English + Tamil)
 src/shared.js       renderers shared by the build and the browser
 src/build.js        the page generator
-assets/             site.css (design system, light + dark), site.js, favicon
+assets/             site.css (design system, light theme only), site.js, favicon
 tools/              check.js (QA), serve.js (local server)
 dist/prod/          ready-to-upload website
 ```

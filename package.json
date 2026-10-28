@@ -1,7 +1,7 @@
 {
   "name": "pozhudhu-tamil-calendar",
   "version": "1.0.0",
-  "description": "Pozhudhu (pozhudhu.in) \u2013 Tamil calendar static site",
+  "description": "Pozhudhu (pozhudhu.com) \u2013 Tamil calendar static site",
   "scripts": {
     "build": "node src/build.js --target=prod",
     "check": "node tools/check.js dist/prod",
