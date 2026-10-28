@@ -1,0 +1,16 @@
+{
+  "name": "naazhigai-tamil-calendar",
+  "version": "1.0.0",
+  "description": "Tamil Calendar 2026 static site (Bold Poster design)",
+  "scripts": {
+    "build": "node src/build.js --target=prod",
+    "check": "node tools/check.js dist/prod",
+    "serve": "node tools/serve.js dist/prod 8080"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "astronomy-engine": "^2.1.19"
+  },
+  "private": true
+}
