@@ -6,6 +6,11 @@
 const fs = require('fs');
 const path = require('path');
 const cfg = require('../site.config');
+// Production robots.txt: every crawler (search engines and AI assistants) is explicitly allowed.
+function robotsProd() {
+  const bots = ['*', 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'Google-Extended', 'Googlebot', 'Bingbot', 'PerplexityBot', 'Amazonbot', 'Bytespider', 'Applebot', 'Meta-ExternalAgent', 'DuckAssistBot'];
+  return bots.map((b) => 'User-agent: ' + b + '\nAllow: /\n').join('\n') + '\nSitemap: ' + cfg.domain + '/sitemap.xml\n';
+}
 const { buildModel } = require('./panchang');
 const N = require('./names');
 const F = require('./format');
@@ -682,7 +687,7 @@ if (!PREVIEW) {
   }
   xml += '</urlset>\n';
   fs.writeFileSync(path.join(OUT, 'sitemap.xml'), xml);
-  fs.writeFileSync(path.join(OUT, 'robots.txt'), DEV ? 'User-agent: *\nDisallow: /\n' : 'User-agent: *\nAllow: /\n\nSitemap: ' + cfg.domain + '/sitemap.xml\n');
+  fs.writeFileSync(path.join(OUT, 'robots.txt'), DEV ? 'User-agent: *\nDisallow: /\n' : robotsProd());
   if (DEV) fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
   // Cloudflare Pages: cache + security headers, and old URL redirects
   fs.writeFileSync(path.join(OUT, '_headers'), [
