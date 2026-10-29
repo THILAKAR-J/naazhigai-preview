@@ -19,5 +19,6 @@ module.exports = {
     '9:2026': '2026-01-15', '4:2026': '2026-08-18', '5:2026': '2026-09-18',
     '4:2027': '2027-08-18', '5:2027': '2027-09-18', '8:2027': '2027-12-17'
   },
+  gaId: 'G-57E9J62JBG',          // Google Analytics 4 measurement ID (prod build only)
   contactEmail: 'contact@pozhudhu.com'                  // set up with Cloudflare Email Routing
 };

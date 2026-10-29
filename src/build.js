@@ -6,6 +6,12 @@
 const fs = require('fs');
 const path = require('path');
 const cfg = require('../site.config');
+// Google Analytics (GA4) tag, production build only, placed first inside <head> as Google asks.
+function gtag() {
+  if (DEV || !cfg.gaId) return '';
+  return '<!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=' + cfg.gaId + '"></script>' +
+    '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag(\'js\',new Date());gtag(\'config\',\'' + cfg.gaId + '\');</script>';
+}
 // Production robots.txt: every crawler (search engines and AI assistants) is explicitly allowed.
 function robotsProd() {
   const bots = ['*', 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'Google-Extended', 'Googlebot', 'Bingbot', 'PerplexityBot', 'Amazonbot', 'Bytespider', 'Applebot', 'Meta-ExternalAgent', 'DuckAssistBot'];
@@ -239,7 +245,7 @@ function shell(lang, r, o) {
     '</div><p class="fine">' + esc(T(lang, Lx.fine)) + '</p></div></footer>';
   const cfgJs = { lang, y: Y, dy: PRIMARY, today: BUILD_KEY, day: PREVIEW ? 'day-__SLUG__.html' : BASE + (lang === 'ta' ? '/tamil' : '') + '/tamil-daily-calendar/__SLUG__/', city: cfg.location.name[lang], wd: N.WEEKDAY.map((w) => w[lang]), mon: lang === 'en' ? N.GMONTH_SHORT : N.GMONTH.map((m) => m.ta), monEn: N.GMONTH.map((m) => m.en.toLowerCase()), todayWord: Lx.today };
   const hreflang = (PREVIEW || o.noindex) ? '' : '<link rel="alternate" hreflang="en" href="' + abs('en', r) + '"><link rel="alternate" hreflang="ta" href="' + abs('ta', r) + '"><link rel="alternate" hreflang="x-default" href="' + abs('en', r) + '">';
-  return '<!doctype html>\n<html lang="' + lang + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' +
+  return '<!doctype html>\n<html lang="' + lang + '"><head>' + gtag() + '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' +
     '<title>' + esc(title) + '</title><meta name="claude:viewport-fit-sides" content="cover">' +
     '<meta name="description" content="' + esc(desc) + '">' + ((o.noindex || DEV) ? '<meta name="robots" content="noindex,nofollow">' : '') +
     (o.noindex ? '' : '<link rel="canonical" href="' + canon + '">' + hreflang) +
@@ -641,7 +647,7 @@ function buildSiteInfo(lang) {
     'ஏதேனும் தவறு தெரிந்தால் <a href="' + href(lang, pg('contact-us')) + '">தொடர்புப் பக்கம்</a> வழியாக எழுதுங்கள்.'
   ]));
   stdPage(lang, 'disclaimer', P(en ? ['The panchangam, timings and dates on this site are calculated with care and are for general guidance only. Different panchangams (Vakya and Thirukanitha) can differ by a few hours, which sometimes changes the tithi or nakshatram shown for a date.', 'For weddings, griha pravesam and other important events, please confirm the muhurtham and lagnam with your family priest or astrologer. ' + esc(cfg.brand.en) + ' is not responsible for decisions taken from this information.'] : ['இந்தத் தளத்திலுள்ள பஞ்சாங்கம், நேரங்கள், தேதிகள் கவனத்துடன் கணக்கிடப்பட்டவை; பொது வழிகாட்டலுக்கு மட்டுமே. வாக்கிய, திருக்கணித பஞ்சாங்கங்களுக்கு இடையே சில மணி நேர வேறுபாடு இருக்கலாம்; அதனால் ஒரு தேதிக்கான திதி அல்லது நட்சத்திரம் மாறலாம்.', 'திருமணம், கிரகப்பிரவேசம் போன்ற முக்கிய நிகழ்வுகளுக்கு முகூர்த்தம், லக்னத்தை உங்கள் குடும்ப புரோகிதர் அல்லது ஜோதிடரிடம் உறுதி செய்யுங்கள். இந்தத் தகவல்களின் அடிப்படையில் எடுக்கப்படும் முடிவுகளுக்கு ' + esc(cfg.brand.ta) + ' பொறுப்பல்ல.']));
-  stdPage(lang, 'privacy-policy', P(en ? ['This site does not ask for an account and does not collect personal details. Pages are plain HTML; the only external service is Google Fonts, which your browser contacts to load the typefaces.', 'If you write to us, we use your email only to reply.'] : ['இந்தத் தளம் கணக்கு கேட்பதில்லை; தனிப்பட்ட விவரங்களைச் சேகரிப்பதில்லை. பக்கங்கள் எளிய HTML; எழுத்துருக்களுக்காக உங்கள் உலாவி Google Fonts-ஐ மட்டும் தொடர்பு கொள்ளும்.', 'நீங்கள் எழுதினால், உங்கள் மின்னஞ்சலைப் பதில் அனுப்ப மட்டுமே பயன்படுத்துவோம்.']));
+  stdPage(lang, 'privacy-policy', P(en ? ['This site does not ask for an account and does not collect personal details. Pages are plain HTML; external services are Google Fonts (typefaces) and Google Analytics, which counts visits in aggregate using cookies.', 'If you write to us, we use your email only to reply.'] : ['இந்தத் தளம் கணக்கு கேட்பதில்லை; தனிப்பட்ட விவரங்களைச் சேகரிப்பதில்லை. பக்கங்கள் எளிய HTML; எழுத்துருக்களுக்கு Google Fonts-ஐயும், வருகைகளை ஒட்டுமொத்தமாக எண்ண (குக்கீகளுடன்) Google Analytics-ஐயும் உங்கள் உலாவி தொடர்பு கொள்ளும்.', 'நீங்கள் எழுதினால், உங்கள் மின்னஞ்சலைப் பதில் அனுப்ப மட்டுமே பயன்படுத்துவோம்.']));
   stdPage(lang, 'terms-of-use', P(en ? ['You may read, print and share pages from this site for personal use. Please link back instead of copying whole tables onto another website.', 'The information is provided as is, without warranty. See the <a href="' + href(lang, pg('disclaimer')) + '">disclaimer</a>.'] : ['தனிப்பட்ட பயன்பாட்டுக்காக இந்தத் தளப் பக்கங்களைப் படிக்கலாம், அச்சிடலாம், பகிரலாம். முழு அட்டவணைகளை வேறு தளத்தில் நகலெடுப்பதற்குப் பதிலாக இணைப்பு தாருங்கள்.', 'தகவல்கள் உள்ளபடியே, உத்தரவாதமின்றி வழங்கப்படுகின்றன. <a href="' + href(lang, pg('disclaimer')) + '">பொறுப்புத் துறப்பைப்</a> பாருங்கள்.']));
   stdPage(lang, 'contact-us', P(en ? ['For corrections, suggestions or questions, email us at:', '<strong style="font-size:22px;user-select:all">' + esc(cfg.contactEmail) + '</strong>', 'Please include the page link and the date you are asking about.'] : ['திருத்தங்கள், பரிந்துரைகள், கேள்விகளுக்கு மின்னஞ்சல்:', '<strong style="font-size:22px;user-select:all">' + esc(cfg.contactEmail) + '</strong>', 'பக்க இணைப்பையும், நீங்கள் கேட்கும் தேதியையும் சேர்த்து எழுதுங்கள்.']));
   // 404
