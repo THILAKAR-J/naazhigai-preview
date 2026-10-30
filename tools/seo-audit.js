@@ -4,7 +4,7 @@ const cfg = require('../site.config');
 const dir = path.resolve(process.argv[2] || 'dist/prod');
 const D = cfg.domain;
 const files = []; (function walk(d) { for (const f of fs.readdirSync(d)) { const p = path.join(d, f); fs.statSync(p).isDirectory() ? walk(p) : files.push(p); } })(dir);
-const html = files.filter((f) => f.endsWith('.html'));
+const html = files.filter((f) => f.endsWith('.html') && !path.relative(dir, f).startsWith('admin' + path.sep));   // /admin/ is private, noindex on purpose
 const urlOf = (f) => { const r = '/' + path.relative(dir, f).split(path.sep).join('/'); return r.endsWith('/index.html') ? r.slice(0, -10) : r; };
 const fileOfUrl = (u) => { if (!u.startsWith(D + '/')) return null; let p = u.slice(D.length); if (p.endsWith('/')) p += 'index.html'; const f = path.join(dir, p); return fs.existsSync(f) ? f : null; };
 const err = []; const warn = []; const stat = { pages: 0, indexable: 0, ta: 0, en: 0 };
