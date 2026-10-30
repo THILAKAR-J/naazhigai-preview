@@ -29,6 +29,34 @@ GitHub Pages, or plain nginx/Apache. `404.html`, `sitemap.xml` and `robots.txt` 
 - Submit `https://pozhudhu.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 - If you add analytics or ads, update the Privacy Policy text in `src/build.js` (search for `privacy-policy`).
 
+## SEO admin (`/admin/`)
+
+A password-protected page for editing the **meta title, meta description, meta keywords, canonical URL and
+URL slug** of any of the 1056 pages, without touching code.
+
+How it works: pressing **Update** commits `data/seo-overrides.json` to GitHub (from the live admin to `main`, from
+the dev preview to `dev`). Cloudflare Pages rebuilds automatically and the change is live in about 2 minutes. Every
+change is in the GitHub history, so any edit can be undone there.
+
+- Changing a slug updates every link, the sitemap, hreflang and canonical, and the old URL 301-redirects to the new
+  one (earlier custom slugs keep redirecting too). The admin refuses a slug that another page already uses; if a clash
+  still reaches the build, the build stops and the live site stays as it was.
+- A canonical URL pointing to another page also removes the page from the sitemap.
+- Files: `admin/` (the page), `functions/admin/api/[[path]].js` (Cloudflare Pages Function: login + save),
+  `data/seo-overrides.json` (the saved edits, keyed by each page's default URL).
+
+**One-time setup in Cloudflare** (Workers & Pages → the project → Settings → Variables and Secrets, add to both
+Production and Preview, type *Secret*), then redeploy:
+
+| Name | Value |
+|---|---|
+| `ADMIN_PASSWORD` | the admin password (long and unique) |
+| `GITHUB_TOKEN` | a GitHub fine-grained token: Repository access → only this repo; Permissions → Contents: Read and write |
+
+Optional: `GITHUB_REPO` (default `THILAKAR-J/naazhigai-preview`), `GITHUB_BRANCH` (default `main` on pozhudhu.com,
+`dev` on dev.pozhudhu.pages.dev), `SESSION_SECRET` (extra login-cookie key). For a second layer of protection, put
+`/admin/*` behind Cloudflare Zero Trust Access.
+
 ## What is on the site
 
 | Section | Pages |
@@ -99,5 +127,7 @@ src/shared.js       renderers shared by the build and the browser
 src/build.js        the page generator
 assets/             site.css (design system, light theme only), site.js, favicon
 tools/              check.js (QA), serve.js (local server)
+admin/              SEO admin page (copied into dist/prod/admin/ with a generated pages.json)
+functions/          Cloudflare Pages Function for the SEO admin (login, save to GitHub)
 dist/prod/          ready-to-upload website
 ```

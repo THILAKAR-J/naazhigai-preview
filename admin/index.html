@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SEO admin | Pozhudhu</title>
+<meta name="description" content="Pozhudhu SEO admin: edit page titles, descriptions, keywords, canonical URLs and URL slugs.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="only light">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Hind+Madurai:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/admin/admin.css">
+</head><body>
+
+<div id="boot" class="boot">Loading…</div>
+
+<section id="login" class="login" hidden aria-labelledby="login-h">
+  <form id="login-form" class="card login-card" autocomplete="on">
+    <div class="mark" aria-hidden="true">P</div>
+    <h2 id="login-h">Pozhudhu SEO admin</h2>
+    <p class="muted">Edit meta titles, descriptions, keywords, canonical URLs and URL slugs for every page.</p>
+    <label for="pw">Password</label>
+    <input id="pw" name="password" type="password" autocomplete="current-password" required>
+    <p id="login-err" class="err" role="alert" hidden></p>
+    <button class="btn primary" type="submit">Log in</button>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="top-in">
+      <h1 class="brand"><span class="mark sm" aria-hidden="true">P</span> SEO admin</h1>
+      <span id="branch" class="badge"></span>
+      <span class="grow"></span>
+      <button id="btn-history" class="btn ghost" type="button">Recent changes</button>
+      <a class="btn ghost" href="/" target="_blank" rel="noopener">View site ↗</a>
+      <button id="btn-logout" class="btn ghost" type="button">Log out</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="side" aria-label="Pages">
+      <div class="side-in">
+        <label class="sr" for="q">Search pages</label>
+        <input id="q" type="search" placeholder="Search title or URL, e.g. rahu kalam" autocomplete="off">
+        <div class="filters">
+          <div class="seg" role="group" aria-label="Language">
+            <button type="button" data-lang="all" aria-pressed="true">All</button>
+            <button type="button" data-lang="en" aria-pressed="false">English</button>
+            <button type="button" data-lang="ta" aria-pressed="false">தமிழ்</button>
+          </div>
+          <div class="row">
+            <label class="sr" for="f-type">Page type</label>
+            <select id="f-type">
+              <option value="all">All types</option>
+              <option value="home">Home</option>
+              <option value="page">Main pages</option>
+              <option value="sub">Month-wise pages</option>
+              <option value="month">Monthly calendar</option>
+              <option value="day">Daily calendar</option>
+            </select>
+            <label class="sr" for="f-year">Year</label>
+            <select id="f-year"><option value="all">All years</option></select>
+          </div>
+          <label class="check"><input id="f-edited" type="checkbox"> Edited pages only</label>
+        </div>
+        <p id="count" class="count" aria-live="polite"></p>
+        <ul id="list" class="list"></ul>
+      </div>
+    </aside>
+
+    <main id="main" class="main">
+      <div id="empty" class="empty">
+        <h2>Pick a page to edit</h2>
+        <p class="muted">Search on the left, choose a page, change its SEO details and press <b>Update</b>. The change is saved to GitHub and the site rebuilds automatically, usually live in about 2 minutes.</p>
+        <div id="history" class="history"></div>
+      </div>
+
+      <form id="editor" class="editor" hidden novalidate>
+        <div class="ed-head">
+          <div>
+            <p class="eyebrow" id="ed-type"></p>
+            <h2 id="ed-title" class="ed-title"></h2>
+            <a id="ed-open" class="url" target="_blank" rel="noopener"></a>
+          </div>
+          <span id="ed-state" class="tag"></span>
+        </div>
+
+        <div class="serp" aria-label="Google search preview">
+          <p class="serp-lbl">Google preview</p>
+          <div class="serp-url" id="serp-url"></div>
+          <div class="serp-title" id="serp-title"></div>
+          <div class="serp-desc" id="serp-desc"></div>
+        </div>
+
+        <div class="field">
+          <div class="lbl-row"><label for="f-title">Meta title</label><span class="meter" id="m-title"></span></div>
+          <input id="f-title" maxlength="120" autocomplete="off">
+          <div class="help"><span>Aim for 50–60 characters. Shown as the blue link on Google.</span><button type="button" class="link" data-default="title">Use default</button></div>
+        </div>
+
+        <div class="field">
+          <div class="lbl-row"><label for="f-desc">Meta description</label><span class="meter" id="m-desc"></span></div>
+          <textarea id="f-desc" rows="3" maxlength="320"></textarea>
+          <div class="help"><span>Aim for 120–160 characters. Shown under the link on Google.</span><button type="button" class="link" data-default="description">Use default</button></div>
+        </div>
+
+        <div class="field">
+          <div class="lbl-row"><label for="f-keys">Meta keywords</label><span class="meter" id="m-keys"></span></div>
+          <input id="f-keys" maxlength="300" autocomplete="off" placeholder="rahu kalam today, rahu kalam chennai">
+          <div class="help"><span>Comma separated. Optional: Google ignores this tag, a few other engines may read it.</span></div>
+        </div>
+
+        <div class="field">
+          <div class="lbl-row"><label for="f-canon">Canonical URL</label></div>
+          <input id="f-canon" type="url" maxlength="500" autocomplete="off" spellcheck="false">
+          <div class="help"><span>Leave as is unless this page copies another page. Pointing it elsewhere tells Google not to rank this page, and it is removed from the sitemap.</span><button type="button" class="link" data-default="canonical">Use default</button></div>
+        </div>
+
+        <div class="field">
+          <div class="lbl-row"><label for="f-slug">URL slug</label></div>
+          <div class="slug"><span id="slug-pre" class="pre"></span><input id="f-slug" maxlength="120" autocomplete="off" spellcheck="false"><span class="post">/</span></div>
+          <div class="help"><span id="slug-help">Lowercase letters, numbers and hyphens. The old URL will 301-redirect to the new one, and all links on the site update.</span><button type="button" class="link" data-default="slug">Use default</button></div>
+        </div>
+
+        <p id="ed-err" class="err" role="alert" hidden></p>
+
+        <div class="actions">
+          <button id="btn-save" class="btn primary" type="submit">Update</button>
+          <button id="btn-discard" class="btn" type="button">Discard changes</button>
+          <span class="grow"></span>
+          <button id="btn-reset" class="btn danger" type="button">Reset page to default</button>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="/admin/admin.js" defer></script>
+</body></html>

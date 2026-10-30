@@ -20,7 +20,7 @@ function adsenseMeta() {
 // Production robots.txt: every crawler (search engines and AI assistants) is explicitly allowed.
 function robotsProd() {
   const bots = ['*', 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'Google-Extended', 'Googlebot', 'Bingbot', 'PerplexityBot', 'Amazonbot', 'Bytespider', 'Applebot', 'Meta-ExternalAgent', 'DuckAssistBot'];
-  return bots.map((b) => 'User-agent: ' + b + '\nAllow: /\n').join('\n') + '\nSitemap: ' + cfg.domain + '/sitemap.xml\n';
+  return bots.map((b) => 'User-agent: ' + b + '\nAllow: /\nDisallow: /admin/\n').join('\n') + '\nSitemap: ' + cfg.domain + '/sitemap.xml\n';
 }
 const { buildModel } = require('./panchang');
 const N = require('./names');
@@ -39,6 +39,33 @@ const OTHER = arg('other', '');
 const DEV = process.argv.includes('--dev');            // review build: noindex everywhere
 const BASE = arg('base', '').replace(/\/$/, '');      // e.g. /naazhigai-preview when hosted under a sub-path
 const OUT = path.join(ROOT, 'dist', DEV ? 'dev' : TARGET);
+const ADMIN = !PREVIEW && !DEV;                         // the /admin/ SEO panel ships with the production build only
+
+// ---------------- SEO overrides (edited from /admin/, stored in data/seo-overrides.json) ----------------
+// Keyed by a page's default path, e.g. "/rahu-kalam/" or "/tamil/tamil-daily-calendar/29-october-2026/".
+// Fields: title, description, keywords, canonical, slug (last URL segment), previousSlugs (kept for 301s).
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const withSlug = (p, s) => p.replace(/[^/]+\/$/, s + '/');
+const SEO = (() => {
+  if (PREVIEW) return {};
+  let raw = {};
+  try { raw = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'seo-overrides.json'), 'utf8')).pages || {}; } catch (e) {
+    if (e.code !== 'ENOENT') throw new Error('data/seo-overrides.json is not valid JSON: ' + e.message);
+  }
+  const out = {};
+  const str = (x, n) => (typeof x === 'string' ? x.replace(/\s+/g, ' ').trim().slice(0, n) : '');
+  for (const [k, v] of Object.entries(raw)) {
+    if (!/^\/(?:[a-z0-9-]+\/)*$/.test(k) || !v || typeof v !== 'object') { console.warn('SEO override skipped, bad page key: ' + k); continue; }
+    const fixed = k === '/' || k === '/tamil/';
+    const o = { title: str(v.title, 120), description: str(v.description, 320), keywords: str(v.keywords, 300), canonical: '', slug: '', previous: [] };
+    if (v.canonical) { if (/^https:\/\/[^\s"'<>]+$/.test(v.canonical)) o.canonical = v.canonical; else console.warn('SEO override: canonical ignored for ' + k); }
+    if (v.slug) { if (!fixed && SLUG_RE.test(v.slug) && withSlug(k, v.slug) !== k) o.slug = v.slug; else if (withSlug(k, v.slug) !== k) console.warn('SEO override: slug ignored for ' + k); }
+    if (!fixed && Array.isArray(v.previousSlugs)) o.previous = v.previousSlugs.filter((s) => SLUG_RE.test(s) && s !== o.slug && withSlug(k, s) !== k);
+    out[k] = o;
+  }
+  return out;
+})();
+const ADMIN_INDEX = [];
 const PRIMARY = cfg.year;                                   // daily + monthly pages exist for this year only
 const YEARS = [PRIMARY].concat(PREVIEW ? [] : (cfg.extraYears || []));
 // pages that exist for every year (the rest: home, daily, monthly, soolam, about pages are primary-year only)
@@ -77,8 +104,14 @@ function href(lang, r) {
   }
   return prodHref(lang, r);
 }
+// final production URL: the default path, with the last segment swapped if an admin slug is set
 function prodHref(lang, r) {
-  const base = BASE + (lang === 'ta' ? '/tamil' : '');
+  const p = defPath(lang, r); const o = SEO[p];
+  return BASE + (o && o.slug ? withSlug(p, o.slug) : p);
+}
+// default path (no BASE, no slug override): the stable key used by data/seo-overrides.json
+function defPath(lang, r) {
+  const base = lang === 'ta' ? '/tamil' : '';
   if (r.p === 'home') return base + '/';
   if (r.p === 'page') return base + (r.y && r.y !== PRIMARY ? '/' + r.y : '') + '/' + r.s + '/';
   if (r.p === 'day') return base + '/tamil-daily-calendar/' + F.slugDay(r.k) + '/';
@@ -229,9 +262,14 @@ const LOGO = '<svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true"
 function shell(lang, r, o) {
   const Lx = L[lang];
   const other = lang === 'en' ? 'ta' : 'en';
-  const title = T(lang, o.title, o.vars) + ' | ' + cfg.brand[lang];
-  const desc = T(lang, o.desc, o.vars);
-  const canon = abs(lang, r);
+  const key = defPath(lang, r); const ov = SEO[key] || {};
+  const dTitle = T(lang, o.title, o.vars) + ' | ' + cfg.brand[lang];
+  const dDesc = T(lang, o.desc, o.vars);
+  const dCanon = abs(lang, r);
+  const title = ov.title || dTitle;
+  const desc = ov.description || dDesc;
+  const canon = esc(ov.canonical || dCanon);
+  if (ADMIN && !(r.p === 'page' && r.s === '404')) ADMIN_INDEX.push({ k: key, u: prodHref(lang, r).slice(BASE.length), l: lang, g: r.p, y: r.y || (r.k ? +r.k.slice(0, 4) : PRIMARY), t: dTitle, d: dDesc, c: dCanon });
   const crumbs = [[Lx.home, { p: 'home' }]].concat(o.crumbs || []);
   const crumbHtml = r.p === 'home' ? '' : '<nav class="crumbs" aria-label="Breadcrumb"><ol>' + crumbs.map((c, i) => '<li>' + (i < crumbs.length - 1 ? '<a href="' + href(lang, c[1]) + '">' + esc(c[0]) + '</a>' : '<span aria-current="page">' + esc(c[0]) + '</span>') + '</li>').join('') + '</ol></nav>';
   const ld = [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c[0], item: abs(lang, c[1]) })) }];
@@ -252,7 +290,7 @@ function shell(lang, r, o) {
   const hreflang = (PREVIEW || o.noindex) ? '' : '<link rel="alternate" hreflang="en" href="' + abs('en', r) + '"><link rel="alternate" hreflang="ta" href="' + abs('ta', r) + '"><link rel="alternate" hreflang="x-default" href="' + abs('en', r) + '">';
   return '<!doctype html>\n<html lang="' + lang + '"><head>' + gtag() + '<meta charset="utf-8">' + adsenseMeta() + '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' +
     '<title>' + esc(title) + '</title><meta name="claude:viewport-fit-sides" content="cover">' +
-    '<meta name="description" content="' + esc(desc) + '">' + ((o.noindex || DEV) ? '<meta name="robots" content="noindex,nofollow">' : '') +
+    '<meta name="description" content="' + esc(desc) + '">' + (ov.keywords ? '<meta name="keywords" content="' + esc(ov.keywords) + '">' : '') + ((o.noindex || DEV) ? '<meta name="robots" content="noindex,nofollow">' : '') +
     (o.noindex ? '' : '<link rel="canonical" href="' + canon + '">' + hreflang) +
     '<meta property="og:type" content="website"><meta property="og:site_name" content="' + esc(cfg.brand[lang]) + '"><meta property="og:title" content="' + esc(title) + '"><meta property="og:description" content="' + esc(desc) + '"><meta property="og:url" content="' + canon + '"><meta property="og:locale" content="' + (lang === 'en' ? 'en_IN' : 'ta_IN') + '"><meta property="og:image" content="' + cfg.domain + '/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="' + esc(cfg.brand.en + ' · ' + cfg.brand.ta + ' – Tamil calendar') + '"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="' + cfg.domain + '/assets/og.jpg">' +
     '<meta name="color-scheme" content="only light"><meta name="theme-color" content="#FFC21A"><link rel="icon" href="' + asset('favicon.svg') + '" type="image/svg+xml"><link rel="apple-touch-icon" href="' + asset('apple-touch-icon.png') + '"><link rel="manifest" href="' + asset('site.webmanifest') + '">' +
@@ -670,8 +708,23 @@ for (const y of YEARS) {
   }
 }
 setYear(PRIMARY); makeRecs();
+// SEO slug safety: a custom URL must never land on another page's URL. Fail the build (the live site stays as it was).
+const DEFAULT_PATHS = new Set(pages.map((p) => defPath(p.lang, p.r)));
+const SLUG_REDIRECTS = [];
+for (const [k, o] of Object.entries(SEO)) {
+  if (!DEFAULT_PATHS.has(k)) { console.warn('SEO override for a page that does not exist (ignored): ' + k); continue; }
+  const fin = o.slug ? withSlug(k, o.slug) : k;
+  if (o.slug) {
+    if (DEFAULT_PATHS.has(fin)) throw new Error('SEO slug clash: ' + k + ' -> ' + fin + ' is already another page. Change the slug in /admin/.');
+    SLUG_REDIRECTS.push([k, fin]);
+  }
+  for (const s of o.previous) { const from = withSlug(k, s); if (!DEFAULT_PATHS.has(from) && from !== fin) SLUG_REDIRECTS.push([from, fin]); }
+}
+const written = new Map();
 for (const p of pages) {
   const f = outFile(p.lang, p.r);
+  if (written.has(f)) throw new Error('Two pages would be written to ' + path.relative(OUT, f) + ' (' + written.get(f) + ' and ' + defPath(p.lang, p.r) + '). Check URL slugs in /admin/.');
+  written.set(f, defPath(p.lang, p.r));
   fs.mkdirSync(path.dirname(f), { recursive: true });
   fs.writeFileSync(f, p.html);
 }
@@ -694,6 +747,8 @@ if (!PREVIEW) {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
   for (const p of urls) {
     const loc = abs(p.lang, p.r); if (seen.has(loc)) continue; seen.add(loc);
+    const ov = SEO[defPath(p.lang, p.r)];
+    if (ov && ov.canonical && ov.canonical !== loc) continue;   // page points its canonical elsewhere: keep it out of the sitemap
     xml += '<url><loc>' + loc + '</loc><lastmod>' + F.istKey(new Date()) + '</lastmod><xhtml:link rel="alternate" hreflang="en" href="' + abs('en', p.r) + '"/><xhtml:link rel="alternate" hreflang="ta" href="' + abs('ta', p.r) + '"/></url>\n';
   }
   xml += '</urlset>\n';
@@ -703,9 +758,18 @@ if (!PREVIEW) {
   // Cloudflare Pages: cache + security headers, and old URL redirects
   fs.writeFileSync(path.join(OUT, '_headers'), [
     '/*', '  X-Content-Type-Options: nosniff', '  Referrer-Policy: strict-origin-when-cross-origin', '  X-Frame-Options: SAMEORIGIN', '  Permissions-Policy: camera=(), microphone=(), geolocation=()',
-    '', '/assets/*', '  Cache-Control: public, max-age=86400, stale-while-revalidate=604800', ''].join('\n'));
+    '', '/assets/*', '  Cache-Control: public, max-age=86400, stale-while-revalidate=604800',
+    '', '/admin/*', '  X-Robots-Tag: noindex, nofollow', '  Cache-Control: no-store', ''].join('\n'));
   fs.writeFileSync(path.join(OUT, '_redirects'), [
     BASE + '/amavasya/ ' + BASE + '/amavasai/ 301', BASE + '/tamil/amavasya/ ' + BASE + '/tamil/amavasai/ 301',
-    BASE + '/2027/amavasya/ ' + BASE + '/2027/amavasai/ 301', BASE + '/tamil/2027/amavasya/ ' + BASE + '/tamil/2027/amavasai/ 301', ''].join('\n'));
+    BASE + '/2027/amavasya/ ' + BASE + '/2027/amavasai/ 301', BASE + '/tamil/2027/amavasya/ ' + BASE + '/tamil/2027/amavasai/ 301']
+    .concat(SLUG_REDIRECTS.map(([a, b]) => BASE + a + ' ' + BASE + b + ' 301')).concat(['']).join('\n'));
+}
+// SEO admin panel (static UI + page index; the save API lives in functions/admin/api/)
+if (ADMIN) {
+  const adminOut = path.join(OUT, 'admin');
+  fs.mkdirSync(adminOut, { recursive: true });
+  for (const f of ['index.html', 'admin.css', 'admin.js']) fs.copyFileSync(path.join(ROOT, 'admin', f), path.join(adminOut, f));
+  fs.writeFileSync(path.join(adminOut, 'pages.json'), JSON.stringify({ domain: cfg.domain, built: new Date().toISOString(), pages: ADMIN_INDEX }));
 }
 console.log('Built ' + pages.length + ' pages for ' + TARGET + ' (static today = ' + BUILD_KEY + ') into ' + path.relative(ROOT, OUT));
