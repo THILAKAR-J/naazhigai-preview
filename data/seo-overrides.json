@@ -1,3 +1,9 @@
 {
-  "pages": {}
+  "pages": {
+    "/privacy-policy/": {
+      "description": "ead the Privacy Policy for Pozhudhu. Learn how we respect your privacy and ensure a secure browsing experience without collecting personal information.",
+      "keywords": "Pozhudhu privacy policy, privacy policy, data privacy, user privacy",
+      "updated": "2026-10-30T09:57:15.217Z"
+    }
+  }
 }
