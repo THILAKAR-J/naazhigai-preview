@@ -12,6 +12,11 @@ function gtag() {
   return '<!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=' + cfg.gaId + '"></script>' +
     '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag(\'js\',new Date());gtag(\'config\',\'' + cfg.gaId + '\');</script>';
 }
+// Google AdSense site-connection meta tag, production build only (not the noindex review build).
+function adsenseMeta() {
+  if (DEV || !cfg.adsenseId) return '';
+  return '<meta name="google-adsense-account" content="' + cfg.adsenseId + '">';
+}
 // Production robots.txt: every crawler (search engines and AI assistants) is explicitly allowed.
 function robotsProd() {
   const bots = ['*', 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'Google-Extended', 'Googlebot', 'Bingbot', 'PerplexityBot', 'Amazonbot', 'Bytespider', 'Applebot', 'Meta-ExternalAgent', 'DuckAssistBot'];
@@ -245,7 +250,7 @@ function shell(lang, r, o) {
     '</div><p class="fine">' + esc(T(lang, Lx.fine)) + '</p></div></footer>';
   const cfgJs = { lang, y: Y, dy: PRIMARY, today: BUILD_KEY, day: PREVIEW ? 'day-__SLUG__.html' : BASE + (lang === 'ta' ? '/tamil' : '') + '/tamil-daily-calendar/__SLUG__/', city: cfg.location.name[lang], wd: N.WEEKDAY.map((w) => w[lang]), mon: lang === 'en' ? N.GMONTH_SHORT : N.GMONTH.map((m) => m.ta), monEn: N.GMONTH.map((m) => m.en.toLowerCase()), todayWord: Lx.today };
   const hreflang = (PREVIEW || o.noindex) ? '' : '<link rel="alternate" hreflang="en" href="' + abs('en', r) + '"><link rel="alternate" hreflang="ta" href="' + abs('ta', r) + '"><link rel="alternate" hreflang="x-default" href="' + abs('en', r) + '">';
-  return '<!doctype html>\n<html lang="' + lang + '"><head>' + gtag() + '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' +
+  return '<!doctype html>\n<html lang="' + lang + '"><head>' + gtag() + '<meta charset="utf-8">' + adsenseMeta() + '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' +
     '<title>' + esc(title) + '</title><meta name="claude:viewport-fit-sides" content="cover">' +
     '<meta name="description" content="' + esc(desc) + '">' + ((o.noindex || DEV) ? '<meta name="robots" content="noindex,nofollow">' : '') +
     (o.noindex ? '' : '<link rel="canonical" href="' + canon + '">' + hreflang) +
