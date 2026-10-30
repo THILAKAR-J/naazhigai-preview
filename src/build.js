@@ -708,7 +708,7 @@ function buildSiteInfo(lang) {
     '## 6. Contact Us',
     'If you have any questions about this Privacy Policy, feel free to reach out to us:',
     'Website: <a href="' + cfg.domain + '/">' + cfg.domain + '/</a>',
-    'Email: <a href="mailto:' + esc(cfg.contactEmail) + '">' + esc(cfg.contactEmail) + '</a>'
+    'Email: <a href="mailto:' + esc(cfg.privacyEmail) + '">' + esc(cfg.privacyEmail) + '</a>'
   ] : [
     'கடைசியாகப் புதுப்பிக்கப்பட்டது: அக்டோபர் 30, 2026',
     esc(cfg.brand.ta) + ' (<a href="' + cfg.domain + '/">' + cfg.domain + '/</a>) தளத்திற்கு வரவேற்கிறோம். உங்கள் தனியுரிமை எங்களுக்கு மிகவும் முக்கியம்; உங்கள் இணைய அனுபவத்தை எளிமையாகவும் பாதுகாப்பாகவும் வைத்திருக்க உறுதிபூண்டுள்ளோம்.',
@@ -727,7 +727,7 @@ function buildSiteInfo(lang) {
     '## 6. எங்களைத் தொடர்பு கொள்ள',
     'இந்தத் தனியுரிமைக் கொள்கை பற்றி ஏதேனும் கேள்விகள் இருந்தால் தயங்காமல் எங்களைத் தொடர்பு கொள்ளுங்கள்:',
     'இணையதளம்: <a href="' + cfg.domain + '/">' + cfg.domain + '/</a>',
-    'மின்னஞ்சல்: <a href="mailto:' + esc(cfg.contactEmail) + '">' + esc(cfg.contactEmail) + '</a>'
+    'மின்னஞ்சல்: <a href="mailto:' + esc(cfg.privacyEmail) + '">' + esc(cfg.privacyEmail) + '</a>'
   ]));
   stdPage(lang, 'terms-of-use', P(en ? ['You may read, print and share pages from this site for personal use. Please link back instead of copying whole tables onto another website.', 'The information is provided as is, without warranty. See the <a href="' + href(lang, pg('disclaimer')) + '">disclaimer</a>.'] : ['தனிப்பட்ட பயன்பாட்டுக்காக இந்தத் தளப் பக்கங்களைப் படிக்கலாம், அச்சிடலாம், பகிரலாம். முழு அட்டவணைகளை வேறு தளத்தில் நகலெடுப்பதற்குப் பதிலாக இணைப்பு தாருங்கள்.', 'தகவல்கள் உள்ளபடியே, உத்தரவாதமின்றி வழங்கப்படுகின்றன. <a href="' + href(lang, pg('disclaimer')) + '">பொறுப்புத் துறப்பைப்</a> பாருங்கள்.']));
   stdPage(lang, 'contact-us', P(en ? ['For corrections, suggestions or questions, email us at:', '<strong style="font-size:22px;user-select:all">' + esc(cfg.contactEmail) + '</strong>', 'Please include the page link and the date you are asking about.'] : ['திருத்தங்கள், பரிந்துரைகள், கேள்விகளுக்கு மின்னஞ்சல்:', '<strong style="font-size:22px;user-select:all">' + esc(cfg.contactEmail) + '</strong>', 'பக்க இணைப்பையும், நீங்கள் கேட்கும் தேதியையும் சேர்த்து எழுதுங்கள்.']));

@@ -21,5 +21,6 @@ module.exports = {
   },
   gaId: 'G-57E9J62JBG',          // Google Analytics 4 measurement ID (prod build only)
   adsenseId: 'ca-pub-7098902265764072',                 // Google AdSense publisher ID, site-verification meta tag (prod build only)
+  privacyEmail: 'jtonyroy1997@gmail.com',                // shown in the Privacy Policy contact section only
   contactEmail: 'contact@pozhudhu.com'                  // set up with Cloudflare Email Routing
 };
