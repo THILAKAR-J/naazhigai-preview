@@ -690,7 +690,45 @@ function buildSiteInfo(lang) {
     'ஏதேனும் தவறு தெரிந்தால் <a href="' + href(lang, pg('contact-us')) + '">தொடர்புப் பக்கம்</a> வழியாக எழுதுங்கள்.'
   ]));
   stdPage(lang, 'disclaimer', P(en ? ['The panchangam, timings and dates on this site are calculated with care and are for general guidance only. Different panchangams (Vakya and Thirukanitha) can differ by a few hours, which sometimes changes the tithi or nakshatram shown for a date.', 'For weddings, griha pravesam and other important events, please confirm the muhurtham and lagnam with your family priest or astrologer. ' + esc(cfg.brand.en) + ' is not responsible for decisions taken from this information.'] : ['இந்தத் தளத்திலுள்ள பஞ்சாங்கம், நேரங்கள், தேதிகள் கவனத்துடன் கணக்கிடப்பட்டவை; பொது வழிகாட்டலுக்கு மட்டுமே. வாக்கிய, திருக்கணித பஞ்சாங்கங்களுக்கு இடையே சில மணி நேர வேறுபாடு இருக்கலாம்; அதனால் ஒரு தேதிக்கான திதி அல்லது நட்சத்திரம் மாறலாம்.', 'திருமணம், கிரகப்பிரவேசம் போன்ற முக்கிய நிகழ்வுகளுக்கு முகூர்த்தம், லக்னத்தை உங்கள் குடும்ப புரோகிதர் அல்லது ஜோதிடரிடம் உறுதி செய்யுங்கள். இந்தத் தகவல்களின் அடிப்படையில் எடுக்கப்படும் முடிவுகளுக்கு ' + esc(cfg.brand.ta) + ' பொறுப்பல்ல.']));
-  stdPage(lang, 'privacy-policy', P(en ? ['This site does not ask for an account and does not collect personal details. Pages are plain HTML; external services are Google Fonts (typefaces) and Google Analytics, which counts visits in aggregate using cookies.', 'If you write to us, we use your email only to reply.'] : ['இந்தத் தளம் கணக்கு கேட்பதில்லை; தனிப்பட்ட விவரங்களைச் சேகரிப்பதில்லை. பக்கங்கள் எளிய HTML; எழுத்துருக்களுக்கு Google Fonts-ஐயும், வருகைகளை ஒட்டுமொத்தமாக எண்ண (குக்கீகளுடன்) Google Analytics-ஐயும் உங்கள் உலாவி தொடர்பு கொள்ளும்.', 'நீங்கள் எழுதினால், உங்கள் மின்னஞ்சலைப் பதில் அனுப்ப மட்டுமே பயன்படுத்துவோம்.']));
+  stdPage(lang, 'privacy-policy', P(en ? [
+    'Last updated: October 30, 2026',
+    'Welcome to ' + esc(cfg.brand.en) + ' (<a href="' + cfg.domain + '/">' + cfg.domain + '/</a>). Your privacy is very important to us, and we are committed to keeping your online experience simple and secure.',
+    '## 1. Information Collection',
+    'We do not collect any personal information.',
+    'When you visit ' + cfg.domain + '/, you can browse our site freely without providing any personal details such as your name, email address, phone number, or physical address. We do not require account registration, login credentials, or personal form submissions to access our content.',
+    '## 2. Cookies and Tracking',
+    'We do not use cookies to identify you personally or to build a profile of you. We use <strong>Google Analytics</strong>, which sets cookies to count visits and understand how the site is used, in aggregate. The site also uses <strong>Google AdSense</strong>, so Google and its advertising partners may use cookies to show and measure ads, including ads based on your earlier visits to this and other websites. Fonts are loaded from Google Fonts. You can block or delete cookies in your browser settings, and you can manage ad personalisation at <a href="https://adssettings.google.com" rel="noopener">adssettings.google.com</a>. Read how Google uses data from sites that use its services at <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">policies.google.com/technologies/partner-sites</a>.',
+    'Standard web server logs created automatically are used strictly for basic operational security and website functionality, not for identifying individual users.',
+    '## 3. Third-Party Links',
+    'Our website may contain links to external sites that are not operated by us. Please be aware that we have no control over the content and practices of these sites, and we cannot accept responsibility or liability for their respective privacy policies. We encourage you to review the privacy policy of any site you visit.',
+    '## 4. Children’s Privacy',
+    'Because we do not collect any personal information, our website does not collect data from children under the age of 13 (or any other age group).',
+    '## 5. Changes to This Privacy Policy',
+    'We may update this Privacy Policy from time to time to reflect changes in our practices or website operations. Any updates will be posted directly on this page with an updated “Last updated” date.',
+    '## 6. Contact Us',
+    'If you have any questions about this Privacy Policy, feel free to reach out to us:',
+    'Website: <a href="' + cfg.domain + '/">' + cfg.domain + '/</a>',
+    'Email: <a href="mailto:' + esc(cfg.privacyEmail) + '">' + esc(cfg.privacyEmail) + '</a>'
+  ] : [
+    'கடைசியாகப் புதுப்பிக்கப்பட்டது: அக்டோபர் 30, 2026',
+    esc(cfg.brand.ta) + ' (<a href="' + cfg.domain + '/">' + cfg.domain + '/</a>) தளத்திற்கு வரவேற்கிறோம். உங்கள் தனியுரிமை எங்களுக்கு மிகவும் முக்கியம்; உங்கள் இணைய அனுபவத்தை எளிமையாகவும் பாதுகாப்பாகவும் வைத்திருக்க உறுதிபூண்டுள்ளோம்.',
+    '## 1. தகவல் சேகரிப்பு',
+    'நாங்கள் எந்தத் தனிப்பட்ட தகவலையும் சேகரிப்பதில்லை.',
+    'நீங்கள் ' + cfg.domain + '/ தளத்தைப் பார்வையிடும்போது, உங்கள் பெயர், மின்னஞ்சல் முகவரி, தொலைபேசி எண் அல்லது முகவரி போன்ற எந்த விவரங்களையும் அளிக்காமலே தளத்தை உலாவலாம். எங்கள் உள்ளடக்கத்தைப் பார்க்க கணக்குப் பதிவு, உள்நுழைவு விவரங்கள் அல்லது தனிப்பட்ட படிவச் சமர்ப்பிப்புகள் தேவையில்லை.',
+    '## 2. குக்கீகள் மற்றும் கண்காணிப்பு',
+    'உங்களைத் தனிப்பட்ட முறையில் அடையாளம் காணவோ, உங்களைப் பற்றிய விவரக்குறிப்பை உருவாக்கவோ நாங்கள் குக்கீகளைப் பயன்படுத்துவதில்லை. வருகைகளை எண்ணவும், தளம் எவ்வாறு பயன்படுத்தப்படுகிறது என்பதை ஒட்டுமொத்தமாக அறியவும் <strong>Google Analytics</strong> குக்கீகளை அமைக்கிறது. இந்தத் தளம் <strong>Google AdSense</strong>-ஐயும் பயன்படுத்துகிறது; எனவே Google மற்றும் அதன் விளம்பரக் கூட்டாளர்கள், இந்தத் தளத்திலும் பிற தளங்களிலும் உங்கள் முந்தைய வருகைகளின் அடிப்படையிலான விளம்பரங்கள் உட்பட, விளம்பரங்களைக் காட்டவும் அளவிடவும் குக்கீகளைப் பயன்படுத்தலாம். எழுத்துருக்கள் Google Fonts-இலிருந்து ஏற்றப்படுகின்றன. உங்கள் உலாவி அமைப்புகளில் குக்கீகளைத் தடுக்கலாம் அல்லது நீக்கலாம்; விளம்பரத் தனிப்பயனாக்கத்தை <a href="https://adssettings.google.com" rel="noopener">adssettings.google.com</a> இல் நிர்வகிக்கலாம். Google சேவைகளைப் பயன்படுத்தும் தளங்களின் தரவை Google எவ்வாறு பயன்படுத்துகிறது என்பதை <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">policies.google.com/technologies/partner-sites</a> இல் படிக்கலாம்.',
+    'தானாக உருவாகும் வழக்கமான வலைத்தளச் சர்வர் பதிவுகள் அடிப்படைப் பாதுகாப்பு மற்றும் தளச் செயல்பாட்டுக்கு மட்டுமே பயன்படுத்தப்படுகின்றன; தனிப்பட்ட பயனர்களை அடையாளம் காண அல்ல.',
+    '## 3. மூன்றாம் தரப்பு இணைப்புகள்',
+    'எங்கள் தளத்தில் எங்களால் நடத்தப்படாத வெளித் தளங்களுக்கான இணைப்புகள் இருக்கலாம். அந்தத் தளங்களின் உள்ளடக்கம் மற்றும் நடைமுறைகள் மீது எங்களுக்குக் கட்டுப்பாடு இல்லை; அவற்றின் தனியுரிமைக் கொள்கைகளுக்கு நாங்கள் பொறுப்பேற்க இயலாது. நீங்கள் பார்வையிடும் ஒவ்வொரு தளத்தின் தனியுரிமைக் கொள்கையையும் படிக்குமாறு பரிந்துரைக்கிறோம்.',
+    '## 4. குழந்தைகளின் தனியுரிமை',
+    'நாங்கள் எந்தத் தனிப்பட்ட தகவலையும் சேகரிக்காததால், 13 வயதுக்குட்பட்ட குழந்தைகளிடமிருந்து (அல்லது வேறு எந்த வயதினரிடமிருந்தும்) எங்கள் தளம் தரவு சேகரிப்பதில்லை.',
+    '## 5. இந்தத் தனியுரிமைக் கொள்கையில் மாற்றங்கள்',
+    'எங்கள் நடைமுறைகள் அல்லது தளச் செயல்பாடுகளில் ஏற்படும் மாற்றங்களைப் பிரதிபலிக்க இந்தத் தனியுரிமைக் கொள்கையை அவ்வப்போது புதுப்பிக்கலாம். புதுப்பிப்புகள் “கடைசியாகப் புதுப்பிக்கப்பட்டது” தேதியுடன் இந்தப் பக்கத்திலேயே வெளியிடப்படும்.',
+    '## 6. எங்களைத் தொடர்பு கொள்ள',
+    'இந்தத் தனியுரிமைக் கொள்கை பற்றி ஏதேனும் கேள்விகள் இருந்தால் தயங்காமல் எங்களைத் தொடர்பு கொள்ளுங்கள்:',
+    'இணையதளம்: <a href="' + cfg.domain + '/">' + cfg.domain + '/</a>',
+    'மின்னஞ்சல்: <a href="mailto:' + esc(cfg.privacyEmail) + '">' + esc(cfg.privacyEmail) + '</a>'
+  ]));
   stdPage(lang, 'terms-of-use', P(en ? ['You may read, print and share pages from this site for personal use. Please link back instead of copying whole tables onto another website.', 'The information is provided as is, without warranty. See the <a href="' + href(lang, pg('disclaimer')) + '">disclaimer</a>.'] : ['தனிப்பட்ட பயன்பாட்டுக்காக இந்தத் தளப் பக்கங்களைப் படிக்கலாம், அச்சிடலாம், பகிரலாம். முழு அட்டவணைகளை வேறு தளத்தில் நகலெடுப்பதற்குப் பதிலாக இணைப்பு தாருங்கள்.', 'தகவல்கள் உள்ளபடியே, உத்தரவாதமின்றி வழங்கப்படுகின்றன. <a href="' + href(lang, pg('disclaimer')) + '">பொறுப்புத் துறப்பைப்</a> பாருங்கள்.']));
   stdPage(lang, 'contact-us', P(en ? ['For corrections, suggestions or questions, email us at:', '<strong style="font-size:22px;user-select:all">' + esc(cfg.contactEmail) + '</strong>', 'Please include the page link and the date you are asking about.'] : ['திருத்தங்கள், பரிந்துரைகள், கேள்விகளுக்கு மின்னஞ்சல்:', '<strong style="font-size:22px;user-select:all">' + esc(cfg.contactEmail) + '</strong>', 'பக்க இணைப்பையும், நீங்கள் கேட்கும் தேதியையும் சேர்த்து எழுதுங்கள்.']));
   // 404
