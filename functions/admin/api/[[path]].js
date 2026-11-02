@@ -13,7 +13,7 @@
 const FILE = 'data/seo-overrides.json';
 const COOKIE = 'pz_admin';
 const SESSION_HOURS = 12;
-const LIMIT = { title: 120, description: 320, keywords: 300, canonical: 500 };
+const LIMIT = { title: 120, description: 320, keywords: 300, canonical: 500, content: 50000 };
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FIXED = new Set(['/', '/tamil/']);
 const withSlug = (p, s) => p.replace(/[^/]+\/$/, s + '/');
@@ -124,13 +124,20 @@ async function save(request, env) {
     if (s.length > n) throw fail(400, label + ' is too long (max ' + n + ' characters).');
     return s;
   };
+  // content is free-form HTML: preserve internal whitespace, only trim ends
+  const cleanHtml = (v, n, label) => {
+    const s = typeof v === 'string' ? v.trim() : '';
+    if (s.length > n) throw fail(400, label + ' is too long (max ' + n + ' characters).');
+    return s;
+  };
   const f = body.fields;
   const next = {
     title: clean(f.title, LIMIT.title, 'Meta title'),
     description: clean(f.description, LIMIT.description, 'Meta description'),
     keywords: clean(f.keywords, LIMIT.keywords, 'Meta keywords'),
     canonical: clean(f.canonical, LIMIT.canonical, 'Canonical URL'),
-    slug: clean(f.slug, 120, 'URL slug').toLowerCase()
+    slug: clean(f.slug, 120, 'URL slug').toLowerCase(),
+    content: cleanHtml(f.content, LIMIT.content, 'Page content')
   };
   if (next.title === page.t) next.title = '';
   if (next.description === page.d) next.description = '';
@@ -162,7 +169,7 @@ async function save(request, env) {
     previous = [...new Set(previous)].filter((s) => s && s !== next.slug).slice(-20);
 
     const entry = {};
-    for (const k of ['title', 'description', 'keywords', 'canonical', 'slug']) if (next[k]) entry[k] = next[k];
+    for (const k of ['title', 'description', 'keywords', 'canonical', 'slug', 'content']) if (next[k]) entry[k] = next[k];
     if (previous.length) entry.previousSlugs = previous;
     const empty = !Object.keys(entry).length;
     if (empty) delete pages[key]; else pages[key] = Object.assign(entry, { updated: new Date().toISOString() });

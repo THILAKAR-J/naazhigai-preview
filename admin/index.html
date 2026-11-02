@@ -121,6 +121,12 @@
           <div class="help"><span id="slug-help">Lowercase letters, numbers and hyphens. The old URL will 301-redirect to the new one, and all links on the site update.</span><button type="button" class="link" data-default="slug">Use default</button></div>
         </div>
 
+        <div class="field field-content">
+          <div class="lbl-row"><label for="f-content">Page content</label><span class="meter" id="m-content"></span></div>
+          <textarea id="f-content" rows="10" placeholder="HTML content shown below this page's main section. Leave empty to show nothing.&#10;&#10;Example:&#10;&lt;h2&gt;About Rahu Kalam&lt;/h2&gt;&#10;&lt;p&gt;Rahu Kalam is considered inauspicious...&lt;/p&gt;"></textarea>
+          <div class="help"><span>HTML accepted. Appears at the bottom of the page. Use &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt; tags.</span><button type="button" class="link" data-default="content">Clear</button></div>
+        </div>
+
         <p id="ed-err" class="err" role="alert" hidden></p>
 
         <div class="actions">

@@ -59,7 +59,7 @@
   }
 
   // ---------- list ----------
-  const eff = (p) => { const o = S.ov[p.k] || {}; return { title: o.title || p.t, url: o.slug ? withSlug(p.k, o.slug) : p.k, edited: !!(o.title || o.description || o.keywords || o.canonical || o.slug) }; };
+  const eff = (p) => { const o = S.ov[p.k] || {}; return { title: o.title || p.t, url: o.slug ? withSlug(p.k, o.slug) : p.k, edited: !!(o.title || o.description || o.keywords || o.canonical || o.slug || o.content) }; };
   function matches(p) {
     const f = S.f;
     if (f.lang !== 'all' && p.l !== f.lang) return false;
@@ -91,10 +91,10 @@
   $('#f-edited').addEventListener('change', (ev) => { S.f.edited = ev.target.checked; renderList(); });
 
   // ---------- editor ----------
-  const F = { title: '#f-title', description: '#f-desc', keywords: '#f-keys', canonical: '#f-canon', slug: '#f-slug' };
+  const F = { title: '#f-title', description: '#f-desc', keywords: '#f-keys', canonical: '#f-canon', slug: '#f-slug', content: '#f-content' };
   const val = (k) => $(F[k]).value.trim();
-  const defaults = (p) => ({ title: p.t, description: p.d, keywords: '', canonical: p.c, slug: lastSeg(p.k) });
-  function currentValues(p) { const o = S.ov[p.k] || {}; const d = defaults(p); return { title: o.title || d.title, description: o.description || d.description, keywords: o.keywords || '', canonical: o.canonical || d.canonical, slug: o.slug || d.slug }; }
+  const defaults = (p) => ({ title: p.t, description: p.d, keywords: '', canonical: p.c, slug: lastSeg(p.k), content: '' });
+  function currentValues(p) { const o = S.ov[p.k] || {}; const d = defaults(p); return { title: o.title || d.title, description: o.description || d.description, keywords: o.keywords || '', canonical: o.canonical || d.canonical, slug: o.slug || d.slug, content: o.content || '' }; }
   const dirty = () => S.sel && S.loaded && Object.keys(F).some((k) => val(k) !== S.loaded[k]);
   const leaveOk = () => !dirty() || confirm('You have unsaved changes on this page. Leave without saving?');
 
@@ -126,6 +126,7 @@
     const url = S.domain + (slug && !FIXED.has(p.k) ? withSlug(p.k, slug) : p.k);
     meter('#m-title', t.length, 30, 60, 120); meter('#m-desc', ds.length, 120, 160, 320);
     $('#m-keys').textContent = kw ? kw.split(',').filter((x) => x.trim()).length + ' keywords' : '';
+    const cn = val('content').length; $('#m-content').textContent = cn ? cn.toLocaleString() + ' / 50,000 chars' : ''; $('#m-content').className = 'meter' + (cn > 50000 ? ' warn' : cn > 0 ? ' good' : '');
     $('#serp-url').textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '').replace(/\//g, ' › ');
     $('#serp-title').textContent = t || d.title; $('#serp-desc').textContent = ds || d.description;
     const live = S.domain + p.u; const open = $('#ed-open'); open.href = live; open.textContent = live + ' ↗';

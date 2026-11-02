@@ -207,6 +207,16 @@ footer.site ul { list-style: none; margin: 12px 0 0; padding: 0; line-height: 2;
 footer.site .fine { margin: 30px 0 0; padding-top: 16px; border-top: 1.5px solid #4A4338; font-size: 14px; color: #CFC7B2; }
 footer.site .brand { font-family: var(--f-display); font-weight: 800; font-size: 32px; letter-spacing: -.03em; color: var(--on-band); line-height: 1; }
 
+/* ---------- admin-injected page content ---------- */
+.page-content { margin-top: 64px; }
+.page-content h2 { font-family: var(--f-display); font-size: clamp(22px, 3vw, 28px); font-weight: 800; letter-spacing: -.01em; margin: 0 0 16px; }
+.page-content h3 { font-family: var(--f-display); font-size: clamp(18px, 2.5vw, 22px); font-weight: 700; margin: 32px 0 12px; }
+.page-content p { margin: 0 0 14px; line-height: 1.65; }
+.page-content ul, .page-content ol { margin: 0 0 14px; padding-left: 1.5em; line-height: 1.65; }
+.page-content li { margin-bottom: 6px; }
+.page-content a { color: var(--teal); }
+.page-content strong { font-weight: 700; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 920px) {
   .bento { grid-template-columns: minmax(0, 1fr); }
