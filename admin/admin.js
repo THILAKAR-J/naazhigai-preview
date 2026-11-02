@@ -92,7 +92,7 @@
 
   // ---------- editor ----------
   const F = { title: '#f-title', description: '#f-desc', keywords: '#f-keys', canonical: '#f-canon', slug: '#f-slug', content: '#f-content' };
-  const val = (k) => $(F[k]).value.trim();
+  const val = (k) => { const el = $(F[k]); return el ? el.value.trim() : ''; };
   const defaults = (p) => ({ title: p.t, description: p.d, keywords: '', canonical: p.c, slug: lastSeg(p.k), content: '' });
   function currentValues(p) { const o = S.ov[p.k] || {}; const d = defaults(p); return { title: o.title || d.title, description: o.description || d.description, keywords: o.keywords || '', canonical: o.canonical || d.canonical, slug: o.slug || d.slug, content: o.content || '' }; }
   const dirty = () => S.sel && S.loaded && Object.keys(F).some((k) => val(k) !== S.loaded[k]);
@@ -109,7 +109,7 @@
   }
   function fill(p) {
     const v = currentValues(p); S.loaded = v;
-    for (const k of Object.keys(F)) $(F[k]).value = v[k];
+    for (const k of Object.keys(F)) { const el = $(F[k]); if (el) el.value = v[k]; }
     const fixed = FIXED.has(p.k);
     $('#f-slug').disabled = fixed;
     $('#slug-pre').textContent = S.domain.replace(/^https?:\/\//, '') + parentOf(p.k) + '‎';   // LRM keeps the trailing "/" in place
@@ -126,7 +126,7 @@
     const url = S.domain + (slug && !FIXED.has(p.k) ? withSlug(p.k, slug) : p.k);
     meter('#m-title', t.length, 30, 60, 120); meter('#m-desc', ds.length, 120, 160, 320);
     $('#m-keys').textContent = kw ? kw.split(',').filter((x) => x.trim()).length + ' keywords' : '';
-    const cn = val('content').length; $('#m-content').textContent = cn ? cn.toLocaleString() + ' / 50,000 chars' : ''; $('#m-content').className = 'meter' + (cn > 50000 ? ' warn' : cn > 0 ? ' good' : '');
+    const mContent = $('#m-content'); if (mContent) { const cn = val('content').length; mContent.textContent = cn ? cn.toLocaleString() + ' / 50,000 chars' : ''; mContent.className = 'meter' + (cn > 50000 ? ' warn' : cn > 0 ? ' good' : ''); }
     $('#serp-url').textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '').replace(/\//g, ' › ');
     $('#serp-title').textContent = t || d.title; $('#serp-desc').textContent = ds || d.description;
     const live = S.domain + p.u; const open = $('#ed-open'); open.href = live; open.textContent = live + ' ↗';
