@@ -57,10 +57,11 @@ const SEO = (() => {
   for (const [k, v] of Object.entries(raw)) {
     if (!/^\/(?:[a-z0-9-]+\/)*$/.test(k) || !v || typeof v !== 'object') { console.warn('SEO override skipped, bad page key: ' + k); continue; }
     const fixed = k === '/' || k === '/tamil/';
-    const o = { title: str(v.title, 120), description: str(v.description, 320), keywords: str(v.keywords, 300), canonical: '', slug: '', previous: [] };
+    const o = { title: str(v.title, 120), description: str(v.description, 320), keywords: str(v.keywords, 300), canonical: '', slug: '', previous: [], content: '' };
     if (v.canonical) { if (/^https:\/\/[^\s"'<>]+$/.test(v.canonical)) o.canonical = v.canonical; else console.warn('SEO override: canonical ignored for ' + k); }
     if (v.slug) { if (!fixed && SLUG_RE.test(v.slug) && withSlug(k, v.slug) !== k) o.slug = v.slug; else if (withSlug(k, v.slug) !== k) console.warn('SEO override: slug ignored for ' + k); }
     if (!fixed && Array.isArray(v.previousSlugs)) o.previous = v.previousSlugs.filter((s) => SLUG_RE.test(s) && s !== o.slug && withSlug(k, s) !== k);
+    if (v.content && typeof v.content === 'string') o.content = v.content.slice(0, 50000);
     out[k] = o;
   }
   return out;
@@ -307,6 +308,7 @@ function shell(lang, r, o) {
     (o.years && o.years.length > 1 ? '<nav class="years" aria-label="' + (lang === 'en' ? 'Year' : 'ஆண்டு') + '">' + o.years.map(([y, rr]) => '<a class="chip' + (y === Y ? ' cur' : '') + '" href="' + href(lang, rr) + '"' + (y === Y ? ' aria-current="page"' : '') + '>' + y + '</a>').join('') + '</nav>' : '') +
     (o.lead ? '<p class="lead">' + esc(T(lang, o.lead, o.vars)) + '</p>' : '') +
     o.body + (o.faq ? faqBlock(lang, o.faq.map(([q, a]) => [T(lang, q, o.vars), T(lang, a, o.vars)])) : '') +
+    (ov.content ? '<div class="page-content">' + ov.content + '</div>' : '') +
     '</div></main>' + footer +
     '<script>window.NZ_CFG=' + JSON.stringify(cfgJs).replace(/</g, '\\u003c') + ';</script>' +
     (o.data ? '<script src="' + asset('shared.js') + '"></script><script src="' + asset('data-' + lang + '.js') + '"></script>' : '') +
