@@ -7,10 +7,10 @@ const fs = require('fs');
 const path = require('path');
 const cfg = require('../site.config');
 // Google Tag Manager (cfg.gtmId) + Google Analytics (GA4, cfg.gaId), production build only, placed first inside <head> as Google asks.
-// The GTM loader comes first; one shared dataLayer/gtag() block follows so 'js' is not pushed twice.
+// The GTM start event (gtm.start / gtm.js) is pushed before the GTM loader, exactly like Google's snippet; one shared dataLayer/gtag() block follows so 'js' is not pushed twice.
 function gtag() {
   if (DEV || (!cfg.gaId && !cfg.gtmId)) return '';
-  return (cfg.gtmId ? '<!-- Google Tag Manager --><script async src="https://www.googletagmanager.com/gtm.js?id=' + cfg.gtmId + '"></script>' : '') +
+  return (cfg.gtmId ? '<!-- Google Tag Manager --><script>window.dataLayer=window.dataLayer||[];window.dataLayer.push({\'gtm.start\':new Date().getTime(),event:\'gtm.js\'});</script><script async src="https://www.googletagmanager.com/gtm.js?id=' + cfg.gtmId + '"></script>' : '') +
     (cfg.gaId ? '<!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=' + cfg.gaId + '"></script>' : '') +
     '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag(\'js\',new Date());' + (cfg.gaId ? 'gtag(\'config\',\'' + cfg.gaId + '\');' : '') + '</script>';
 }
