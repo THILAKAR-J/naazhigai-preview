@@ -20,6 +20,7 @@ module.exports = {
     '4:2027': '2027-08-18', '5:2027': '2027-09-18', '8:2027': '2027-12-17'
   },
   gaId: 'G-57E9J62JBG',          // Google Analytics 4 measurement ID (prod build only)
+  gtmId: 'GTM-KNQ9W9G2',         // Google Tag Manager container ID (prod build only)
   adsenseId: 'ca-pub-7098902265764072',                 // Google AdSense publisher ID, site-verification meta tag (prod build only)
   privacyEmail: 'jtonyroy1997@gmail.com',                // shown in the Privacy Policy contact section only
   contactEmail: 'contact@pozhudhu.com'                  // set up with Cloudflare Email Routing
