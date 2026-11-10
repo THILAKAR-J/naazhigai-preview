@@ -796,6 +796,8 @@ if (!PREVIEW) {
   xml += '</urlset>\n';
   fs.writeFileSync(path.join(OUT, 'sitemap.xml'), xml);
   fs.writeFileSync(path.join(OUT, 'robots.txt'), DEV ? 'User-agent: *\nDisallow: /\n' : robotsProd());
+  // ads.txt for Google AdSense (production only), built from the publisher ID in site.config.js
+  if (!DEV && cfg.adsenseId) fs.writeFileSync(path.join(OUT, 'ads.txt'), 'google.com, ' + cfg.adsenseId.replace(/^ca-/, '') + ', DIRECT, f08c47fec0942fa0\n');
   if (DEV) fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
   // Cloudflare Pages: cache + security headers, and old URL redirects
   fs.writeFileSync(path.join(OUT, '_headers'), [
