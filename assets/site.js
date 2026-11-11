@@ -15,6 +15,19 @@
   function fmtShort(k) { var p = parts(k); return p.d + ' ' + C.mon[p.m - 1]; }
   function each(sel, fn) { Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
   var inYear = parts(K).y === (C.dy || C.y); // daily pages exist for the primary year
+  // titles / descriptions written with a {date} token: show the visitor's date even if the page was built earlier
+  if (C.tpl && C.monFull) {
+    var kp = parts(K), dt = kp.d + ' ' + C.monFull[kp.m - 1] + ' ' + kp.y;
+    var fill = function (s) { return String(s || '').replace(/\{date\}/g, dt); };
+    var setMeta = function (sel, v) { var m = document.querySelector(sel); if (m && v) m.setAttribute('content', v); };
+    document.title = fill(C.tpl.t);
+    setMeta('meta[name="description"]', fill(C.tpl.d));
+    setMeta('meta[name="keywords"]', fill(C.tpl.k));
+    setMeta('meta[property="og:title"]', fill(C.tpl.t));
+    setMeta('meta[property="og:description"]', fill(C.tpl.d));
+    setMeta('meta[name="twitter:title"]', fill(C.tpl.t));
+    setMeta('meta[name="twitter:description"]', fill(C.tpl.d));
+  }
   if (K === C.today) { return; } // the static page was built for today: nothing to change
 
   // top strip

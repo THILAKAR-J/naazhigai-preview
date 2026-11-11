@@ -182,6 +182,12 @@
       "description": "Check Yamagandam timings for every day and month in 2026. Find weekday schedules, daily timings and monthly Yamagandam details.",
       "keywords": "yamagandam, yamagandam 2026, today yamagandam, weekly yamagandam timings, monthly yamagandam timings",
       "updated": "2026-10-30T18:39:17.033Z"
+    },
+    "/nalla-neram/": {
+      "title": "Nalla Neram {date} Today – Tamil Auspicious Timings",
+      "description": "Check {date} today's Nalla Neram timings in Tamil Nadu. Find auspicious hours for starting new activities, important work, and special occasions.",
+      "keywords": "nalla neram, nalla neram today, auspicious time today, tamil nalla neram, today good time",
+      "updated": "2026-11-11T11:00:00.000Z"
     }
   }
 }

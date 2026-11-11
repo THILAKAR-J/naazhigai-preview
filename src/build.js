@@ -269,8 +269,15 @@ function shell(lang, r, o) {
   const dTitle = T(lang, o.title, o.vars) + ' | ' + cfg.brand[lang];
   const dDesc = T(lang, o.desc, o.vars);
   const dCanon = abs(lang, r);
-  const title = ov.title || dTitle;
-  const desc = ov.description || dDesc;
+  // {date} in a title / description / keywords (admin or default) is replaced with today's date (IST) at build time;
+  // assets/site.js refreshes it in the browser so the page is correct even between daily rebuilds.
+  const tplTitle = ov.title || dTitle, tplDesc = ov.description || dDesc, tplKeys = ov.keywords || '';
+  const dateTxt = (() => { const p = F.parts(TODAY); return p.d + ' ' + N.GMONTH[p.m - 1][lang] + ' ' + p.y; })();
+  const fillDate = (s) => s.replace(/\{date\}/g, dateTxt);
+  const hasDate = /\{date\}/.test(tplTitle + tplDesc + tplKeys);
+  const title = fillDate(tplTitle);
+  const desc = fillDate(tplDesc);
+  const keys = fillDate(tplKeys);
   const canon = esc(ov.canonical || dCanon);
   if (ADMIN && !(r.p === 'page' && r.s === '404')) ADMIN_INDEX.push({ k: key, u: prodHref(lang, r).slice(BASE.length), l: lang, g: r.p, y: r.y || (r.k ? +r.k.slice(0, 4) : PRIMARY), t: dTitle, d: dDesc, c: dCanon });
   const crumbs = [[Lx.home, { p: 'home' }]].concat(o.crumbs || []);
@@ -290,10 +297,11 @@ function shell(lang, r, o) {
     GROUPS.filter((g) => g[0] !== 'tithi').map((g) => '<div><strong>' + esc(GROUP_TITLE[g[0]][lang === 'en' ? 0 : 1]) + '</strong><ul>' + g[1].map((it) => '<li>' + glink(lang, it) + '</li>').join('') + '</ul></div>').join('') +
     '</div><p class="fine">' + esc(T(lang, Lx.fine)) + '</p></div></footer>';
   const cfgJs = { lang, y: Y, dy: PRIMARY, today: BUILD_KEY, day: PREVIEW ? 'day-__SLUG__.html' : BASE + (lang === 'ta' ? '/tamil' : '') + '/tamil-daily-calendar/__SLUG__/', city: cfg.location.name[lang], wd: N.WEEKDAY.map((w) => w[lang]), mon: lang === 'en' ? N.GMONTH_SHORT : N.GMONTH.map((m) => m.ta), monEn: N.GMONTH.map((m) => m.en.toLowerCase()), todayWord: Lx.today };
+  if (hasDate) { cfgJs.monFull = N.GMONTH.map((m) => m[lang]); cfgJs.tpl = { t: tplTitle, d: tplDesc, k: tplKeys }; }
   const hreflang = (PREVIEW || o.noindex) ? '' : '<link rel="alternate" hreflang="en" href="' + abs('en', r) + '"><link rel="alternate" hreflang="ta" href="' + abs('ta', r) + '"><link rel="alternate" hreflang="x-default" href="' + abs('en', r) + '">';
   return '<!doctype html>\n<html lang="' + lang + '"><head>' + gtag() + '<meta charset="utf-8">' + adsenseMeta() + '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' +
     '<title>' + esc(title) + '</title><meta name="claude:viewport-fit-sides" content="cover">' +
-    '<meta name="description" content="' + esc(desc) + '">' + (ov.keywords ? '<meta name="keywords" content="' + esc(ov.keywords) + '">' : '') + ((o.noindex || DEV) ? '<meta name="robots" content="noindex,nofollow">' : '') +
+    '<meta name="description" content="' + esc(desc) + '">' + (keys ? '<meta name="keywords" content="' + esc(keys) + '">' : '') + ((o.noindex || DEV) ? '<meta name="robots" content="noindex,nofollow">' : '') +
     (o.noindex ? '' : '<link rel="canonical" href="' + canon + '">' + hreflang) +
     '<meta property="og:type" content="website"><meta property="og:site_name" content="' + esc(cfg.brand[lang]) + '"><meta property="og:title" content="' + esc(title) + '"><meta property="og:description" content="' + esc(desc) + '"><meta property="og:url" content="' + canon + '"><meta property="og:locale" content="' + (lang === 'en' ? 'en_IN' : 'ta_IN') + '"><meta property="og:image" content="' + cfg.domain + '/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="' + esc(cfg.brand.en + ' · ' + cfg.brand.ta + ' – Tamil calendar') + '"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="' + cfg.domain + '/assets/og.jpg">' +
     '<meta name="color-scheme" content="only light"><meta name="theme-color" content="#FFC21A"><link rel="icon" href="' + asset('favicon-48.png') + '" type="image/png" sizes="48x48"><link rel="icon" href="' + asset('favicon-96.png') + '" type="image/png" sizes="96x96"><link rel="icon" href="' + asset('favicon-32.png') + '" type="image/png" sizes="32x32"><link rel="shortcut icon" href="' + BASE + '/favicon.ico"><link rel="apple-touch-icon" href="' + asset('apple-touch-icon.png') + '"><link rel="manifest" href="' + asset('site.webmanifest') + '">' +
