@@ -1,0 +1,26 @@
+# Rebuilds pozhudhu.com every day just after midnight IST, so the {date} in titles/descriptions
+# (e.g. /nalla-neram/) is always today's date in the static HTML that Google reads.
+# It calls a Cloudflare Pages deploy hook (project "pozhudhu", branch main).
+# Setup: GitHub repo -> Settings -> Secrets and variables -> Actions -> New repository secret
+#        Name: CF_DEPLOY_HOOK   Value: the deploy hook URL from Cloudflare (Pages -> pozhudhu -> Settings -> Build -> Deploy Hooks)
+name: Daily rebuild
+on:
+  schedule:
+    - cron: '35 18 * * *'   # 18:35 UTC = 00:05 IST
+  workflow_dispatch:
+permissions: {}
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare Pages build
+        env:
+          HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::warning::CF_DEPLOY_HOOK secret is not set, nothing triggered"
+            exit 0
+          fi
+          code=$(curl -sS -o /tmp/out.json -w '%{http_code}' -X POST "$HOOK")
+          echo "Cloudflare responded HTTP $code"
+          [ "$code" = "200" ] || { cat /tmp/out.json; exit 1; }
