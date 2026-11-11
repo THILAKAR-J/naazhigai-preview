@@ -261,7 +261,7 @@ function exploreChips(lang) {
 }
 
 // ---------------- page shell ----------------
-const LOGO = '<svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true"><rect class="lg-a" x="2" y="2" width="38" height="38" rx="10" stroke-width="2.5"/><circle class="lg-b" cx="21" cy="21" r="9" stroke-width="2.5"/><path d="M21 15v6l4 2" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>';
+const LOGO = '<img class="logo-img" src="' + asset('logo.png') + '" width="48" height="48" alt="">';
 function shell(lang, r, o) {
   const Lx = L[lang];
   const other = lang === 'en' ? 'ta' : 'en';
@@ -296,7 +296,7 @@ function shell(lang, r, o) {
     '<meta name="description" content="' + esc(desc) + '">' + (ov.keywords ? '<meta name="keywords" content="' + esc(ov.keywords) + '">' : '') + ((o.noindex || DEV) ? '<meta name="robots" content="noindex,nofollow">' : '') +
     (o.noindex ? '' : '<link rel="canonical" href="' + canon + '">' + hreflang) +
     '<meta property="og:type" content="website"><meta property="og:site_name" content="' + esc(cfg.brand[lang]) + '"><meta property="og:title" content="' + esc(title) + '"><meta property="og:description" content="' + esc(desc) + '"><meta property="og:url" content="' + canon + '"><meta property="og:locale" content="' + (lang === 'en' ? 'en_IN' : 'ta_IN') + '"><meta property="og:image" content="' + cfg.domain + '/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="' + esc(cfg.brand.en + ' · ' + cfg.brand.ta + ' – Tamil calendar') + '"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="' + cfg.domain + '/assets/og.jpg">' +
-    '<meta name="color-scheme" content="only light"><meta name="theme-color" content="#FFC21A"><link rel="icon" href="' + asset('favicon.svg') + '" type="image/svg+xml"><link rel="apple-touch-icon" href="' + asset('apple-touch-icon.png') + '"><link rel="manifest" href="' + asset('site.webmanifest') + '">' +
+    '<meta name="color-scheme" content="only light"><meta name="theme-color" content="#FFC21A"><link rel="icon" href="' + asset('favicon-48.png') + '" type="image/png" sizes="48x48"><link rel="icon" href="' + asset('favicon-96.png') + '" type="image/png" sizes="96x96"><link rel="icon" href="' + asset('favicon-32.png') + '" type="image/png" sizes="32x32"><link rel="shortcut icon" href="' + BASE + '/favicon.ico"><link rel="apple-touch-icon" href="' + asset('apple-touch-icon.png') + '"><link rel="manifest" href="' + asset('site.webmanifest') + '">' +
     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Hind+Madurai:wght@400;600;700&display=swap">' +
     '<link rel="stylesheet" href="' + asset('site.css') + '">' +
@@ -775,7 +775,8 @@ const assetDir = PREVIEW ? OUT : path.join(OUT, 'assets');
 fs.mkdirSync(assetDir, { recursive: true });
 fs.copyFileSync(path.join(ROOT, 'assets/site.css'), path.join(assetDir, 'site.css'));
 fs.copyFileSync(path.join(ROOT, 'assets/site.js'), path.join(assetDir, 'site.js'));
-for (const f of ['favicon.svg', 'og.jpg', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png']) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(assetDir, f));
+for (const f of ['favicon.ico', 'favicon-32.png', 'favicon-48.png', 'favicon-96.png', 'logo.png', 'og.jpg', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png']) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(assetDir, f));
+fs.copyFileSync(path.join(ROOT, 'assets', 'favicon.ico'), path.join(OUT, 'favicon.ico'));
 fs.writeFileSync(path.join(assetDir, 'site.webmanifest'), JSON.stringify({ name: cfg.brand.en + ' – Tamil Calendar', short_name: cfg.brand.en, lang: 'en', start_url: BASE + '/', display: 'standalone', background_color: '#FFFDF5', theme_color: '#FFC21A', icons: [{ src: BASE + '/assets/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: BASE + '/assets/icon-512.png', sizes: '512x512', type: 'image/png' }] }, null, 2) + '\n');
 fs.copyFileSync(path.join(__dirname, 'shared.js'), path.join(assetDir, 'shared.js'));
 for (const lang of LANGS) {
