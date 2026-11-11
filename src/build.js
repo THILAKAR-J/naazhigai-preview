@@ -775,7 +775,7 @@ const assetDir = PREVIEW ? OUT : path.join(OUT, 'assets');
 fs.mkdirSync(assetDir, { recursive: true });
 fs.copyFileSync(path.join(ROOT, 'assets/site.css'), path.join(assetDir, 'site.css'));
 fs.copyFileSync(path.join(ROOT, 'assets/site.js'), path.join(assetDir, 'site.js'));
-for (const f of ['favicon.svg', 'favicon.ico', 'favicon-32.png', 'favicon-48.png', 'favicon-96.png', 'logo.png', 'og.jpg', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png']) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(assetDir, f));
+for (const f of ['favicon.ico', 'favicon-32.png', 'favicon-48.png', 'favicon-96.png', 'logo.png', 'og.jpg', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png']) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(assetDir, f));
 fs.copyFileSync(path.join(ROOT, 'assets', 'favicon.ico'), path.join(OUT, 'favicon.ico'));
 fs.writeFileSync(path.join(assetDir, 'site.webmanifest'), JSON.stringify({ name: cfg.brand.en + ' – Tamil Calendar', short_name: cfg.brand.en, lang: 'en', start_url: BASE + '/', display: 'standalone', background_color: '#FFFDF5', theme_color: '#FFC21A', icons: [{ src: BASE + '/assets/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: BASE + '/assets/icon-512.png', sizes: '512x512', type: 'image/png' }] }, null, 2) + '\n');
 fs.copyFileSync(path.join(__dirname, 'shared.js'), path.join(assetDir, 'shared.js'));
