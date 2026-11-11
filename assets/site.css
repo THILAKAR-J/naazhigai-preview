@@ -41,8 +41,7 @@ header.site .wrap { display: flex; flex-wrap: wrap; align-items: center; justify
 .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
 .logo b { font-family: var(--f-display); font-weight: 800; font-size: 32px; letter-spacing: -.03em; line-height: 1; }
 .logo small { display: block; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-.logo svg .lg-a { fill: var(--yellow); stroke: var(--line); }
-.logo svg .lg-b { fill: var(--tomato); stroke: var(--line); }
+.logo-img { display: block; width: 48px; height: 48px; border-radius: 50%; flex: none; }
 .navbox { overflow-x: auto; max-width: 100%; padding-bottom: 4px; }
 .nav { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0 2px 2px; }
 @media (max-width: 760px) { .nav { flex-wrap: nowrap; } }
